@@ -11,8 +11,17 @@
 
 #define HERE printf("%d\n",__LINE__)
 
-typedef struct EditLine * Term_EditLine;
 unsigned char pwrapper (EditLine *, int, unsigned int);
+
+typedef struct _HistEdit {
+  EditLine * el;    /* the editline struct */
+  History  *hist;   /* the history struct */
+  SV *el_ref;       /* perl reference of the editline struct */
+  SV *promptSv;     /* perl prompt subref */
+  SV *rpromptSv;    /* perl rprompt subref */
+  char *prompt; 
+  char *rprompt;
+} HistEdit;
 
 /* user defined functions */
 static unsigned char uf00 (EditLine * e, int k) { return pwrapper(e,k,0); }
@@ -86,39 +95,27 @@ static struct ufe {
   { uf31, NULL }
 };
 
-typedef struct _histedit {
-  EditLine * el;
-  History  *hist;
-  SV *promptSV;
-  SV *rpromptSV;
-  char *prompt;
-  char *rprompt;
-} HistEdit;
-
-static SV *el_callback;
-
 unsigned char pwrapper (EditLine * e, int k, unsigned int id)
 {
 
   dSP;
 
-  SV *el;
+  HistEdit *he;
   int count;
   int ret = CC_NORM;
 
   if(id < 32) {
     if(uf_tbl[id].pfunc != NULL) {
 
-      dXSTARG;
+      el_get(e,EL_CLIENTDATA,&he);
 
-/*       el = sv_newmortal(); */
-/*       sv_setref_pv(el, "Term::EditLine", (void*)e); */
+      dXSTARG;
 
       ENTER;
       SAVETMPS;
 
       PUSHMARK(SP);
-      XPUSHs(el_callback);
+      XPUSHs(he->el_ref);
       XPUSHi(k);
       PUTBACK;
 
@@ -141,156 +138,204 @@ unsigned char pwrapper (EditLine * e, int k, unsigned int id)
   return (unsigned char)ret;
 }
 
+/* static SV * promptSV; */
+/* static SV * rpromptSV; */
+/* static char *prompt = NULL; */
+/* static char *rprompt = NULL; */
+/* static History *hist = NULL; */
 
-static SV * promptSV;
-static SV * rpromptSV;
-static char *prompt = NULL;
-static char *rprompt = NULL;
-static History *hist = NULL;
-
-char * promptfunc (EditLine * e)
+char *
+pvsubwrapper(HistEdit *he, SV *sub, char *def)
 {
-  if (promptSV == NULL)
-    if (prompt != NULL)
-      return prompt;
-    else
-      return NULL;
-
   dSP;
-
-  SV *el;
   SV *svret;
-  int count;
+  int count,a,b;
   STRLEN len;
 
-/*   el = sv_newmortal(); */
-/*   sv_setref_pv(el, "Term::EditLine", (void*)e); */
+  if (sub == NULL)
+    return def;
 
   ENTER;
   SAVETMPS;
-
   PUSHMARK(SP);
-  XPUSHs(el_callback);
+  XPUSHs(he->el_ref);
   PUTBACK;
-  count = perl_call_sv(promptSV,G_SCALAR);
+
+  count = perl_call_sv(sub,G_SCALAR);
 
   SPAGAIN;
 
-  if (count != 1) {
-    croak("Term::EditLine: error calling prompt function\n");
-  }
+  if (count != 1)
+    croak ("Term::EditLine: error calling perl sub\n");
 
   svret = POPs;
+
   if(SvPOK(svret)) {
-    prompt = malloc(SvLEN(svret)+1);
-    strcpy(prompt,SvPV(svret,PL_na));
+
+    b = SvLEN(svret);
+
+    if(def == NULL)
+      def = malloc(b+1);
+    else if ((a = strlen(def)) < b)
+      def = realloc(def,b-a);
+
+    Copy(SvPV(svret,PL_na),def,b,char);
+    *(def+b) = '\0';
+
   }
 
   PUTBACK;
   FREETMPS;
   LEAVE;
-  return prompt;
+  return def;
 }
 
-char * rpromptfunc (EditLine * e)
+char *promptfunc (EditLine *e)
 {
-  if (rpromptSV == NULL)
-    if (rprompt != NULL)
-      return rprompt;
-    else
-      return NULL;
-
-  dSP;
-
-  SV *el;
-  SV *svret;
-  int count;
-  STRLEN len;
-
-  //el = sv_newmortal();
-  //sv_setref_pv(el, "Term::EditLine", (void*)e);
-
-  ENTER;
-  SAVETMPS;
-
-  PUSHMARK(SP);
-  XPUSHs(el_callback);
-  PUTBACK;
-  count = perl_call_sv(rpromptSV,G_SCALAR);
-
-  SPAGAIN;
-
-  if (count != 1) {
-    croak("Term::EditLine: error calling prompt function\n");
-  }
-
-  svret = POPs;
-  if(SvPOK(svret)) {
-    rprompt = malloc(SvLEN(svret)+1);
-    strcpy(rprompt,SvPV(svret,PL_na));
-  }
-
-  PUTBACK;
-  FREETMPS;
-  LEAVE;
-  return rprompt;
+  HistEdit *he;
+  el_get(e,EL_CLIENTDATA,&he);
+  return pvsubwrapper(he,he->promptSv,he->prompt);
 }
+
+char *rpromptfunc (EditLine *e)
+{
+  HistEdit *he;
+  el_get(e,EL_CLIENTDATA,&he);
+  return pvsubwrapper(he,he->rpromptSv,he->rprompt);
+}
+
+/* char * promptfunc (EditLine * e) */
+/* { */
+/*   SV *el; */
+/*   if (promptSV == NULL) */
+/*       return prompt; */
+
+/*   dSP; */
+
+/*   SV *svret; */
+/*   int count; */
+/*   STRLEN len; */
+  
+/*   el_get(e,EL_CLIENTDATA,&el); */
+
+/*   ENTER; */
+/*   SAVETMPS; */
+
+/*   PUSHMARK(SP); */
+/*   XPUSHs(el); */
+/*   PUTBACK; */
+/*   count = perl_call_sv(promptSV,G_SCALAR); */
+
+/*   SPAGAIN; */
+
+/*   if (count != 1) { */
+/*     croak("Term::EditLine: error calling prompt function\n"); */
+/*   } */
+
+/*   svret = POPs; */
+/*   if(SvPOK(svret)) { */
+/*     prompt = malloc(SvLEN(svret)+1); */
+/*     strcpy(prompt,SvPV(svret,PL_na)); */
+/*   } */
+
+/*   PUTBACK; */
+/*   FREETMPS; */
+/*   LEAVE; */
+/*   return prompt; */
+/* } */
+
+/* char * rpromptfunc (EditLine * e) */
+/* { */
+/*   if (rpromptSV == NULL) */
+/*     if (rprompt != NULL) */
+/*       return rprompt; */
+/*     else */
+/*       return NULL; */
+
+/*   dSP; */
+
+/*   SV *el; */
+/*   SV *svret; */
+/*   int count; */
+/*   STRLEN len; */
+
+/*   el_get(e,EL_CLIENTDATA,&el); */
+
+/*   ENTER; */
+/*   SAVETMPS; */
+
+/*   PUSHMARK(SP); */
+/*   XPUSHs(el); */
+/*   PUTBACK; */
+/*   count = perl_call_sv(rpromptSV,G_SCALAR); */
+
+/*   SPAGAIN; */
+
+/*   if (count != 1) { */
+/*     croak("Term::EditLine: error calling prompt function\n"); */
+/*   } */
+
+/*   svret = POPs; */
+/*   if(SvPOK(svret)) { */
+/*     rprompt = malloc(SvLEN(svret)+1); */
+/*     strcpy(rprompt,SvPV(svret,PL_na)); */
+/*   } */
+
+/*   PUTBACK; */
+/*   FREETMPS; */
+/*   LEAVE; */
+/*   return rprompt; */
+/* } */
 
 MODULE = Term::EditLine		PACKAGE = Term::EditLine   PREFIX = el_
 INCLUDE: const-xs.inc
 
 void
-el_beep(editline)
-	EditLine * 	editline
+el_beep(he)
+	HistEdit * 	he
+CODE:
+{
+  el_beep(he->el);
+}
 
 void
-el_deletestr(editline, count)
-	EditLine * 	editline
+el_deletestr(he, count)
+	HistEdit * 	he
 	int		count
-
-int
-el_get(editline, arg1, arg2)
-	EditLine * 	editline
-	int	arg1
-	void *	arg2
+CODE:
+{
+  el_deletestr(he->el,count);
+}
 
 char 
-el_getc(editline)
-	EditLine * 	editline
+el_getc(he)
+	HistEdit * 	he
 PREINIT:
   char *ch;
   int ret;
 CODE:
 {
-  HERE;
-  ch = malloc(1);
-  ret = el_getc(editline,ch);
-  if (ret == -1)
-    RETVAL = NULL;
-  else {
-    RETVAL = ch;
-  }
+  RETVAL = el_getc(he->el,ch);
 }
 
 void
-el_gets(editline)
-	EditLine * editline
-PROTOTYPE: $
+el_gets(he)
+	HistEdit* he
 PREINIT:
   int count;
   const char *line;
 PPCODE:
 {
-  line = el_gets(editline,&count);
-  EXTEND(sp,2);
-  if (line != NULL) {
-    PUSHs(sv_2mortal(newSVpvn(line,count)));
-  } else {
-    PUSHs(&PL_sv_undef);
-  }
+  line = el_gets(he->el,&count);
+
+  dXSTARG;
+  if (line != NULL)
+    XPUSHp(line,count);
+  else
+    XPUSHs(&PL_sv_undef);
 }
 
-EditLine *
+HistEdit *
 el_new(pkg,name,fin=stdin,fout=stdout,ferr=stderr)
      char *     pkg
      char *     name
@@ -299,225 +344,257 @@ el_new(pkg,name,fin=stdin,fout=stdout,ferr=stderr)
      FILE *	ferr
 PREINIT:
    HistEvent ev;
+   SV *el;
 CODE:
 {
-  RETVAL = el_init(name, fin, fout, ferr);
-  ST(0) = sv_newmortal();
-  sv_setref_pv(ST(0),"Term::EditLine",(void*)RETVAL);
-  el_callback = ST(0);
 
-  hist = history_init();
-  history (hist,&ev,H_SETSIZE,100);
-  el_set(RETVAL,EL_HIST,history,hist);
+  RETVAL = malloc(sizeof(HistEdit));
+  
+  RETVAL->el = el_init(name, fin, fout, ferr);
+  RETVAL->el_ref = newSVsv(sv_newmortal());
+  sv_setref_pv(RETVAL->el_ref,"Term::EditLine",(void*)RETVAL);  
 
-  el_source(RETVAL, NULL);
+  RETVAL->promptSv = NULL;
+  RETVAL->prompt = NULL;
+  RETVAL->rpromptSv = NULL;
+  RETVAL->rprompt = NULL;
+
+  ST(0) = RETVAL->el_ref;
+
+  RETVAL->hist = history_init();
+  history (RETVAL->hist,&ev,H_SETSIZE,100);
+
+  el_set(RETVAL->el,EL_HIST,history,RETVAL->hist);
+  el_set(RETVAL->el,EL_CLIENTDATA,RETVAL);
+
+  el_source(RETVAL->el, NULL);
 }
 
-void el_DESTROY(editline)
-     EditLine *editline
+void el_DESTROY(he)
+     HistEdit *he
+PREINIT:
+SV *el;
 CODE:
 {
-  if(prompt != NULL)
-    free(prompt);  
-  if(rprompt != NULL)
-    free(rprompt);
-  if(promptSV != NULL)
-    sv_clear(promptSV);
-  if(rpromptSV != NULL)
-    sv_clear(rpromptSV);
-  el_end(editline);
-  history_end(hist);
+  if(he->prompt != NULL)
+    free(he->prompt);  
+  if(he->rprompt != NULL)
+    free(he->rprompt);
+  if(he->promptSv != NULL) {
+    sv_free(he->promptSv);
+  }
+  if(he->rpromptSv != NULL)
+    sv_free(he->rpromptSv);
+
+  sv_free(he->el_ref);
+  el_end(he->el);
+  history_end(he->hist);
+  free(he);
 }
 
 void
-el_set_history_set_size(editline,size)
-         EditLine *editline
+el_set_history_set_size(he,size)
+         HistEdit *he
          int size
 PREINIT:
 HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_SETSIZE,size);
+  history(he->hist,&ev,H_SETSIZE,size);
 }
 
 void
-el_history_enter(editline,str)
-     EditLine *editline
+el_history_enter(he,str)
+     HistEdit *he
      char *str
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_ENTER,str);
+  history(he->hist,&ev,H_ENTER,str);
 }
 
 void
-el_history_append (editline,str)
-     EditLine *editline
+el_history_append (he,str)
+     HistEdit *he
      char *str
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_APPEND,str);
+  history(he->hist,&ev,H_APPEND,str);
 }
 
 void
-el_history_add (editline,str)
-     EditLine *editline
+el_history_add (he,str)
+     HistEdit *he
      char *str
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_ADD,str);
+  history(he->hist,&ev,H_ADD,str);
 }
 
 int
-el_history_get_size (editline)
-     EditLine *editline
+el_history_get_size (he)
+     HistEdit *he
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_GETSIZE);
+  history(he->hist,&ev,H_GETSIZE);
   RETVAL = ev.num;
 }
 
 void
-el_history_clear (editline)
-     EditLine *editline
+el_history_clear (he)
+     HistEdit *he
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_CLEAR);
+  history(he->hist,&ev,H_CLEAR);
 }
 
 const char *
-el_history_get_first(editline)
-     EditLine *editline
+el_history_get_first(he)
+     HistEdit *he
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_FIRST);
+  history(he->hist,&ev,H_FIRST);
   RETVAL = ev.str;
 }
 
 const char *
-el_history_get_last(editline)
-     EditLine *editline
+el_history_get_last(he)
+     HistEdit *he
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_LAST);
+  history(he->hist,&ev,H_LAST);
   RETVAL = ev.str;
 }
 
 const char *
-el_history_get_prev(editline)
-     EditLine *editline
+el_history_get_prev(he)
+     HistEdit *he
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_PREV);
-  RETVAL = ev.str;
-}
-
-
-const char *
-el_history_get_next(editline)
-     EditLine *editline
-PREINIT:
-  HistEvent ev;
-CODE:
-{
-  history(hist,&ev,H_NEXT);
+  history(he->hist,&ev,H_PREV);
   RETVAL = ev.str;
 }
 
 
 const char *
-el_history_get_curr(editline)
-     EditLine *editline
+el_history_get_next(he)
+     HistEdit *he
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_CURR);
+  history(he->hist,&ev,H_NEXT);
   RETVAL = ev.str;
 }
 
-void
-el_history_set(editline)
-     EditLine *editline
-PREINIT:
-  HistEvent ev;
-CODE:
-{
-  history(hist,&ev,H_SET);
-}
 
 const char *
-el_history_get_prev_str(editline,str)
-     EditLine *editline
-     char *str
+el_history_get_curr(he)
+     HistEdit *he
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_PREV_STR,str);
-  RETVAL = ev.str;
-}
-
-const char *
-el_history_get_next_str(editline,str)
-     EditLine *editline
-     char *str
-PREINIT:
-  HistEvent ev;
-CODE:
-{
-  history(hist,&ev,H_NEXT_STR,str);
+  history(he->hist,&ev,H_CURR);
   RETVAL = ev.str;
 }
 
 void
-el_history_load(editline,str)
-     EditLine *editline
+el_history_set(he)
+     HistEdit *he
+PREINIT:
+  HistEvent ev;
+CODE:
+{
+  history(he->hist,&ev,H_SET);
+}
+
+const char *
+el_history_get_prev_str(he,str)
+     HistEdit *he
      char *str
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_LOAD,str);
+  history(he->hist,&ev,H_PREV_STR,str);
+  RETVAL = ev.str;
+}
+
+const char *
+el_history_get_next_str(he,str)
+     HistEdit *he
+     char *str
+PREINIT:
+  HistEvent ev;
+CODE:
+{
+  history(he->hist,&ev,H_NEXT_STR,str);
+  RETVAL = ev.str;
 }
 
 void
-el_history_save(editline,str)
-     EditLine *editline
+el_history_load(he,str)
+     HistEdit *he
      char *str
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(hist,&ev,H_SAVE,str);
+  history(he->hist,&ev,H_LOAD,str);
+}
+
+void
+el_history_save(he,str)
+     HistEdit *he
+     char *str
+PREINIT:
+  HistEvent ev;
+CODE:
+{
+  history(he->hist,&ev,H_SAVE,str);
 }
 
 int
-el_insertstr(editline, str)
-	EditLine * 	editline
+el_insertstr(he, str)
+	HistEdit * 	he
 	char *		str
+CODE:
+{
+  RETVAL = el_insertstr(he->el,str);
+}
 
-const LineInfo *
-el_line(editline)
-	EditLine * 	editline
+void
+el_line(he)
+     HistEdit * 	he
+PREINIT:
+     const LineInfo *le;
+PPCODE:
+{
+  le = el_line(he->el);
+  EXTEND(sp,3);
+  PUSHs(sv_2mortal(newSVpv(le->buffer,0)));
+  PUSHs(sv_2mortal(newSViv(le->cursor - le->buffer)));
+  PUSHs(sv_2mortal(newSViv(le->lastchar - le->buffer)));
+}
 
-int el_parse(editline,...)
-        EditLine * editline
+int el_parse(he,...)
+        HistEdit * he
 PREINIT:
   int alen,i;
   char **argv;
@@ -541,7 +618,7 @@ CODE:
 
     argv[alen] = NULL;
 
-    RETVAL = el_parse(editline,alen,argv);
+    RETVAL = el_parse(he->el,alen,argv);
 
     free(argv);
 
@@ -551,91 +628,120 @@ CODE:
 }
 
 void
-el_push(editline, arg1)
-	EditLine * 	editline
+el_push(he, arg1)
+	HistEdit * he
 	char *	arg1
+CODE:
+{
+  el_push(he->el,arg1);
+}
 
 void
-el_reset(editline)
-	EditLine * 	editline
+el_reset(he)
+	HistEdit * 	he
+CODE:
+{
+  el_reset(he->el);
+}
 
 void
-el_resize(editline)
-	EditLine * 	editline
+el_resize(he)
+	HistEdit * 	he
+CODE:
+{
+  el_resize(he->el);
+}
 
 
-int el_set_prompt(editline, func)
-     EditLine * editline
+int el_set_prompt(he, func)
+     HistEdit * he
      SV * func
 CODE:
 {
   if(strcmp(sv_reftype(SvRV(func),0),"CODE") == 0) {
-    promptSV = newSVsv(func);
-    RETVAL = el_set(editline,EL_PROMPT,promptfunc);
+    he->promptSv = newSVsv(func);
+    RETVAL = el_set(he->el,EL_PROMPT,promptfunc);
   } else {
-    if(promptSV != NULL)
-      sv_clear(promptSV);
-    if(SvPOK(func)) {
-      prompt = malloc(SvLEN(func)+1);
-      strcpy(prompt,SvPV(func,PL_na));
+    if(he->promptSv != NULL) {
+      sv_free(he->promptSv);
+      he->promptSv = NULL;
     }
-    RETVAL = el_set(editline,EL_PROMPT,promptfunc);
+    if(SvPOK(func)) {
+      he->prompt = malloc(SvLEN(func)+1);
+      strcpy(he->prompt,SvPV(func,PL_na));
+    }
+    RETVAL = el_set(he->el,EL_PROMPT,promptfunc);
   }
 }
 
-int el_set_rprompt(editline, func)
-     EditLine * editline
+int el_set_rprompt(he, func)
+     HistEdit * he
      SV * func
 CODE:
 {
   if(strcmp(sv_reftype(SvRV(func),0),"CODE") == 0) {
-    rpromptSV = newSVsv(func);
-    RETVAL = el_set(editline,EL_RPROMPT,rpromptfunc);
+    he->rpromptSv = newSVsv(func);
+    RETVAL = el_set(he->el,EL_RPROMPT,rpromptfunc);
   } else {
-    if(rpromptSV != NULL)
-      sv_clear(rpromptSV);
-    if(SvPOK(func)) {
-      rprompt = malloc(SvLEN(func)+1);
-      strcpy(rprompt,SvPV(func,PL_na));
+    if(he->rpromptSv != NULL) {
+      sv_free(he->rpromptSv);
+      he->rpromptSv = NULL;
     }
-    RETVAL = el_set(editline,EL_PROMPT,rpromptfunc);
+    if(SvPOK(func)) {
+      he->rprompt = malloc(SvLEN(func)+1);
+      strcpy(he->rprompt,SvPV(func,PL_na));
+    }
+    RETVAL = el_set(he->el,EL_PROMPT,rpromptfunc);
   }
 }
 
-SV * el_get_prompt(editline)
-     EditLine *editline
+SV * el_get_prompt(he)
+     HistEdit *he
 CODE:
 {
-  if(promptSV != NULL)
-    RETVAL = promptSV;
-  else if(prompt != NULL)
-    RETVAL = newSVpv(prompt,0);
+  if(he->promptSv != NULL)
+    RETVAL = he->promptSv;
+  else if(he->prompt != NULL)
+    RETVAL = newSVpv(he->prompt,0);
   else 
     RETVAL = &PL_sv_undef;
 }
 
-SV * el_get_rprompt(editline)
-     EditLine *editline
+SV * el_get_rprompt(he)
+     HistEdit *he
 CODE:
 {
-  if(rpromptSV != NULL)
-    RETVAL = rpromptSV;
-  else if(rprompt != NULL)
-    RETVAL = newSVpv(rprompt,0);
+  if(he->rpromptSv != NULL)
+    RETVAL = he->rpromptSv;
+  else if(he->rprompt != NULL)
+    RETVAL = newSVpv(he->rprompt,0);
   else 
     RETVAL = &PL_sv_undef;
 }
 
-int el_set_editor(editline,mode)
-     EditLine * editline
+void
+el_set_editor(he,mode)
+     HistEdit * he
      char *mode
 CODE:
 {
-  RETVAL = el_set(editline,EL_EDITOR,mode);
+  if (!strcmp(mode,"vi") || !strcmp(mode,"emacs"))
+    el_set(he->el,EL_EDITOR,mode);
 }
 
-int el_add_fun (editline,name,help,sub)
-     EditLine * editline
+char*
+el_get_editor(he)
+     HistEdit *he
+PREINIT:
+     char mode[6];
+CODE:
+{
+  el_get(he->el,EL_EDITOR,mode);
+  RETVAL = mode;
+}
+
+int el_add_fun (he,name,help,sub)
+     HistEdit * he
      char *name
      char *help
      SV *sub
@@ -653,12 +759,16 @@ CODE:
     croak("Term::EditLine: Error: you can only add up to 32 functions\n");
     RETVAL = -1;
   } else {
-    RETVAL = el_set(editline,EL_ADDFN,name,help,uf_tbl[i].cwrapper);
+    RETVAL = el_set(he->el,EL_ADDFN,name,help,uf_tbl[i].cwrapper);
   }
 }
 
 
 int
-el_source(editline, arg1)
-	EditLine * 	editline
+el_source(he, arg1)
+	HistEdit * 	he
 	const char *	arg1
+CODE:
+{
+  el_source(he->el,arg1);
+}

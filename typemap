@@ -5,7 +5,7 @@ const char *					T_PTROBJ
 int *						T_PTROBJ
 
 TYPEMAP
-EditLine *                                   T_PTROBJ_SPECIAL
+HistEdit *                                   T_PTROBJ_SPECIAL
 
 INPUT
 T_PTROBJ_SPECIAL
