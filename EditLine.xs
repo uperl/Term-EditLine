@@ -19,6 +19,7 @@ typedef struct _HistEdit {
   SV *el_ref;       /* perl reference of the editline struct */
   SV *promptSv;     /* perl prompt subref */
   SV *rpromptSv;    /* perl rprompt subref */
+  SV *getcSv;       /* perl EL_GETCFN subref */
   char *prompt; 
   char *rprompt;
 } HistEdit;
@@ -138,12 +139,6 @@ unsigned char pwrapper (EditLine * e, int k, unsigned int id)
   return (unsigned char)ret;
 }
 
-/* static SV * promptSV; */
-/* static SV * rpromptSV; */
-/* static char *prompt = NULL; */
-/* static char *rprompt = NULL; */
-/* static History *hist = NULL; */
-
 char *
 pvsubwrapper(HistEdit *he, SV *sub, char *def)
 {
@@ -204,88 +199,45 @@ char *rpromptfunc (EditLine *e)
   return pvsubwrapper(he,he->rpromptSv,he->rprompt);
 }
 
-/* char * promptfunc (EditLine * e) */
-/* { */
-/*   SV *el; */
-/*   if (promptSV == NULL) */
-/*       return prompt; */
+int te_getc_fun (EditLine *e, char *c)
+{
+  SV *svret;
+  int count,len;
+  HistEdit *he;
 
-/*   dSP; */
+  el_get(e,EL_CLIENTDATA,&he);
 
-/*   SV *svret; */
-/*   int count; */
-/*   STRLEN len; */
+  if (he->getcSv != NULL) {
+
+    dSP;
+    
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+    XPUSHs(he->el_ref);
+    PUTBACK;
   
-/*   el_get(e,EL_CLIENTDATA,&el); */
+    count = perl_call_sv(he->getcSv,G_SCALAR);
 
-/*   ENTER; */
-/*   SAVETMPS; */
+    SPAGAIN;
 
-/*   PUSHMARK(SP); */
-/*   XPUSHs(el); */
-/*   PUTBACK; */
-/*   count = perl_call_sv(promptSV,G_SCALAR); */
+    if (count != 1)
+      croak ("Term::EditLine: error calling perl sub\n");
 
-/*   SPAGAIN; */
+    svret = POPs;
 
-/*   if (count != 1) { */
-/*     croak("Term::EditLine: error calling prompt function\n"); */
-/*   } */
+    if(SvPOK(svret)) {
+      Copy(SvPV(svret,PL_na),c,1,char);
+    }
 
-/*   svret = POPs; */
-/*   if(SvPOK(svret)) { */
-/*     prompt = malloc(SvLEN(svret)+1); */
-/*     strcpy(prompt,SvPV(svret,PL_na)); */
-/*   } */
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
 
-/*   PUTBACK; */
-/*   FREETMPS; */
-/*   LEAVE; */
-/*   return prompt; */
-/* } */
-
-/* char * rpromptfunc (EditLine * e) */
-/* { */
-/*   if (rpromptSV == NULL) */
-/*     if (rprompt != NULL) */
-/*       return rprompt; */
-/*     else */
-/*       return NULL; */
-
-/*   dSP; */
-
-/*   SV *el; */
-/*   SV *svret; */
-/*   int count; */
-/*   STRLEN len; */
-
-/*   el_get(e,EL_CLIENTDATA,&el); */
-
-/*   ENTER; */
-/*   SAVETMPS; */
-
-/*   PUSHMARK(SP); */
-/*   XPUSHs(el); */
-/*   PUTBACK; */
-/*   count = perl_call_sv(rpromptSV,G_SCALAR); */
-
-/*   SPAGAIN; */
-
-/*   if (count != 1) { */
-/*     croak("Term::EditLine: error calling prompt function\n"); */
-/*   } */
-
-/*   svret = POPs; */
-/*   if(SvPOK(svret)) { */
-/*     rprompt = malloc(SvLEN(svret)+1); */
-/*     strcpy(rprompt,SvPV(svret,PL_na)); */
-/*   } */
-
-/*   PUTBACK; */
-/*   FREETMPS; */
-/*   LEAVE; */
-/*   return rprompt; */
-/* } */
+    return 1;
+  }
+  return 0;
+}
 
 MODULE = Term::EditLine		PACKAGE = Term::EditLine   PREFIX = el_
 INCLUDE: const-xs.inc
@@ -307,15 +259,19 @@ CODE:
   el_deletestr(he->el,count);
 }
 
-char 
+char *
 el_getc(he)
 	HistEdit * 	he
 PREINIT:
-  char *ch;
+  char ch[2];
+  char c;
   int ret;
 CODE:
 {
-  RETVAL = el_getc(he->el,ch);
+  el_getc(he->el,&c);
+  ch[0] = c;
+  ch[1] = '\0';
+  RETVAL = ch;
 }
 
 void
@@ -358,6 +314,7 @@ CODE:
   RETVAL->prompt = NULL;
   RETVAL->rpromptSv = NULL;
   RETVAL->rprompt = NULL;
+  RETVAL->getcSv = NULL;
 
   ST(0) = RETVAL->el_ref;
 
@@ -589,6 +546,7 @@ PPCODE:
   le = el_line(he->el);
   EXTEND(sp,3);
   PUSHs(sv_2mortal(newSVpv(le->buffer,0)));
+  //printf("%s, %d, %d\n",le->buffer,le->cursor - le->buffer,le->lastchar - le->buffer);
   PUSHs(sv_2mortal(newSViv(le->cursor - le->buffer)));
   PUSHs(sv_2mortal(newSViv(le->lastchar - le->buffer)));
 }
@@ -600,7 +558,7 @@ PREINIT:
   char **argv;
   char* tmp;
   STRLEN len;
-CODE:
+PPCODE:
 {
   if (items > 1) {
 
@@ -618,12 +576,12 @@ CODE:
 
     argv[alen] = NULL;
 
-    RETVAL = el_parse(he->el,alen,argv);
+    XPUSHi(el_parse(he->el,alen,argv));
 
     free(argv);
 
   } else {
-    RETVAL = -1;
+    XSRETURN_UNDEF;
   }
 }
 
@@ -695,28 +653,28 @@ CODE:
   }
 }
 
-SV * el_get_prompt(he)
+void el_get_prompt(he)
      HistEdit *he
-CODE:
+PPCODE:
 {
   if(he->promptSv != NULL)
-    RETVAL = he->promptSv;
+    XPUSHs(sv_2mortal(he->promptSv));
   else if(he->prompt != NULL)
-    RETVAL = newSVpv(he->prompt,0);
+    XPUSHs(sv_2mortal(newSVpv(he->prompt,0)));
   else 
-    RETVAL = &PL_sv_undef;
+    XSRETURN_UNDEF;
 }
 
-SV * el_get_rprompt(he)
+void el_get_rprompt(he)
      HistEdit *he
-CODE:
+PPCODE:
 {
   if(he->rpromptSv != NULL)
-    RETVAL = he->rpromptSv;
+    XPUSHs(sv_2mortal(he->rpromptSv));
   else if(he->rprompt != NULL)
-    RETVAL = newSVpv(he->rprompt,0);
+    XPUSHs(sv_2mortal(newSVpv(he->rprompt,0)));
   else 
-    RETVAL = &PL_sv_undef;
+    XSRETURN_UNDEF;
 }
 
 void
@@ -738,6 +696,57 @@ CODE:
 {
   el_get(he->el,EL_EDITOR,mode);
   RETVAL = mode;
+}
+
+void
+el_set_terminal(he,type)
+     HistEdit * he
+     char *type
+CODE:
+{
+  el_set(he->el,EL_TERMINAL,type);
+}
+
+
+void
+el_signal(he,flag)
+     HistEdit *he
+     int flag
+CODE:
+{
+  el_set(he->el,EL_SIGNAL,flag);
+}
+
+int el_bind(he,...)
+        HistEdit * he
+PREINIT:
+  const char *cmd;
+  int alen,i;
+  char **argv;
+CODE:
+{
+  if (items > 1) {
+
+    argv = malloc(sizeof(char*) * (items+1));
+    argv[0] = "bind";
+
+    for(i=1;i<items;i++) {
+      if(SvPOK(ST(i))) {
+	argv[i] = SvPV(ST(i),PL_na);
+      } else {
+	argv[i] = NULL;
+      }
+    }
+
+    argv[items] = NULL;
+
+    RETVAL = el_parse(he->el,items,argv);
+
+    free(argv);
+
+  } else {
+    XSRETURN_UNDEF;
+  }
 }
 
 int el_add_fun (he,name,help,sub)
@@ -763,6 +772,27 @@ CODE:
   }
 }
 
+int el_set_getc_fun (he,sub)
+     HistEdit *he
+     SV *sub
+CODE:
+{
+  if (SvTYPE(SvRV(sub)) == SVt_PVCV) {
+    he->getcSv = newSVsv(sub);
+    RETVAL = el_set(he->el,EL_GETCFN,te_getc_fun);
+  } else {
+    RETVAL = 0;
+  }
+}
+
+int el_restore_getc_fun(he)
+     HistEdit *he
+CODE:
+{
+  sv_free(he->getcSv);
+  he->getcSv = NULL;
+  RETVAL = el_set(he->el,EL_GETCFN,EL_BUILTIN_GETCFN);
+}
 
 int
 el_source(he, arg1)

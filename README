@@ -1,4 +1,4 @@
-Term/EditLine version 0.01
+Term/EditLine version 0.03
 ==========================
 
 The README is used to introduce the module and provide instructions on
@@ -25,14 +25,11 @@ DEPENDENCIES
 
 This module requires these other modules and libraries:
 
-  blah blah blah
+libedit
 
 COPYRIGHT AND LICENCE
-
-Put the correct copyright and licence information here.
 
 Copyright (C) 2003 Ulrich Burgbacher
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
-
+it under the same terms as Perl itself.

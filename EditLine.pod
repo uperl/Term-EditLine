@@ -64,6 +64,73 @@ See el_set(3). This functions performs an
 el_set( editline, EL_ADDFN, NAME, HELP, FUN ) call. FUN is to be a
 reference to a perl subroutine.
 
+=item line
+
+Returns three items (in this order): the current string buffer of the 
+Term::EditLine structure, the index of the cursor, and the index of the 
+last character. 
+
+=item set_getc_fun ( SUBREF )
+
+Define the character reading function as SUBREF. This function is to
+return one single character. It is called internally by gets() and getc().
+It is useful to define a custom getc function, if you want to write an 
+interactive program with line editing function that has to process events
+when no input is available. A simple tcp chatclient example:
+
+  use Term::EditLine;
+  use IO::Socket;
+  use strict;
+
+  my ($sock,$el,$rin,$buf);
+
+  $sock = IO::Socket::INET->new("$ARGV[0]:$ARGV[1]") or die "...";
+
+  $rin = '';
+  vec($rin,fileno($sock),1) = 1;
+  vec($rin,fileno(STDIN),1) = 1;
+
+  $el = Term::EditLine->new('example');
+
+  $el->set_prompt('$ ');
+  $el->set_getc_fun(\&get_c);
+  $el->bind('-e');
+
+  while (defined($_ = $el->gets)) {
+    chomp;
+    syswrite($sock,"$_\n",length($_)+1);
+  }
+
+  sub get_c {
+    my ($tmp,$i,$c);
+    while (1) {
+      my $rout = $rin;
+      if (select ($rout,undef,undef,0.1)) {
+        if (vec($rout,fileno($sock),1)) {
+	  if(sysread ($sock,$tmp,1024)) {
+	    $tmp = $buf . $tmp;
+	  }
+	  while (($i = index($tmp,"\n")) != -1) {
+	    $_ = substr ($tmp,0,$i);
+  	    chomp ($_);
+	    print "\r\e[0J";                 # ugly
+	    print "$_\n". $el->get_prompt(); # hack!
+	    $tmp = substr($tmp,$i+1<=length($tmp)?$i+1:length($i+1));
+	  }
+	  $buf = $tmp;
+        }
+        if (vec($rout,fileno(STDIN),1)) {
+	  sysread(STDIN,$c,1);
+	  return $c;
+        }
+      }
+    }
+  }
+
+=item restore_getc_fun
+
+Restore the editline builtin getc function.
+
 =item history_set_size ( SIZE )
 
 Set size of history to SIZE elements.
@@ -141,8 +208,6 @@ documented in editline(3):
 =item push
 
 =item resize
-
-=item line
 
 =item insertstr
 
