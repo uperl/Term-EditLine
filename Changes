@@ -1,0 +1,6 @@
+Revision history for Perl extension Term::EditLine.
+
+0.01  Tue Jan  7 23:07:26 2003
+	- original version; created by h2xs 1.22 with options
+		-Ox -n Term::EditLine histedit.h
+
