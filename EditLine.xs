@@ -5,6 +5,7 @@
 #include "ppport.h"
 
 #include <histedit.h>
+
 #include <stdio.h>
 
 #include "const-c.inc"
@@ -23,6 +24,8 @@ typedef struct _HistEdit {
   char *prompt; 
   char *rprompt;
 } HistEdit;
+
+extern void re_refresh(EditLine *);
 
 /* user defined functions */
 static unsigned char uf00 (EditLine * e, int k) { return pwrapper(e,k,0); }
@@ -350,7 +353,7 @@ CODE:
 }
 
 void
-el_set_history_set_size(he,size)
+el_history_set_size(he,size)
          HistEdit *he
          int size
 PREINIT:
@@ -545,10 +548,25 @@ PPCODE:
 {
   le = el_line(he->el);
   EXTEND(sp,3);
-  PUSHs(sv_2mortal(newSVpv(le->buffer,0)));
-  //printf("%s, %d, %d\n",le->buffer,le->cursor - le->buffer,le->lastchar - le->buffer);
+  PUSHs(sv_2mortal(newSVpv(le->buffer,le->lastchar - le->buffer)));
+  /*  printf("%s, %d, %d\n",le->buffer,le->cursor - le->buffer,le->lastchar - le->buffer);*/
   PUSHs(sv_2mortal(newSViv(le->cursor - le->buffer)));
   PUSHs(sv_2mortal(newSViv(le->lastchar - le->buffer)));
+}
+
+void el_set_line(he,buffer,cursor)
+     HistEdit * he
+     char * buffer
+     int cursor
+CODE:
+{
+  LineInfo *l = (LineInfo*) el_line(he->el);
+  l->buffer = buffer;
+  l->lastchar = buffer+strlen(buffer);
+  if(buffer+cursor > l->lastchar)
+    l->cursor = l->lastchar;
+  else 
+    l->cursor = buffer+cursor;
 }
 
 int el_parse(he,...)

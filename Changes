@@ -7,3 +7,10 @@ Revision history for Perl extension Term::EditLine.
 0.03  Sun Jun 15 17:40:01 2003
   - added set_getc_fun; Term::EditLine now supports non blocking I/O
   - Replaced the standard README file
+
+0.04  Fri Dec 12 19:22:16 2003
+  - added more information to the README file
+  - changed the POD documentation
+
+0.05  Sun Jan 25 21:01:33 2004
+  - added $el->set_line, not really tested, maybe buggy
