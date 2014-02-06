@@ -352,7 +352,7 @@ CODE:
   free(he);
 }
 
-void
+int
 el_history_set_size(he,size)
          HistEdit *he
          int size
@@ -360,10 +360,12 @@ PREINIT:
 HistEvent ev;
 CODE:
 {
-  history(he->hist,&ev,H_SETSIZE,size);
+  RETVAL = history(he->hist,&ev,H_SETSIZE,size);
 }
+OUTPUT:
+  RETVAL
 
-void
+int
 el_history_enter(he,str)
      HistEdit *he
      char *str
@@ -371,10 +373,12 @@ PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(he->hist,&ev,H_ENTER,str);
+  RETVAL = history(he->hist,&ev,H_ENTER,str);
 }
+OUTPUT:
+  RETVAL
 
-void
+int
 el_history_append (he,str)
      HistEdit *he
      char *str
@@ -382,10 +386,12 @@ PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(he->hist,&ev,H_APPEND,str);
+  RETVAL = history(he->hist,&ev,H_APPEND,str);
 }
+OUTPUT:
+  RETVAL
 
-void
+int
 el_history_add (he,str)
      HistEdit *he
      char *str
@@ -393,122 +399,160 @@ PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(he->hist,&ev,H_ADD,str);
+  RETVAL = history(he->hist,&ev,H_ADD,str);
 }
+OUTPUT:
+  RETVAL
 
-int
+void
 el_history_get_size (he)
      HistEdit *he
 PREINIT:
   HistEvent ev;
-CODE:
+PPCODE:
 {
-  history(he->hist,&ev,H_GETSIZE);
-  RETVAL = ev.num;
+  dTARG;
+  int ret = history(he->hist,&ev,H_GETSIZE);
+  if (GIMME_V == G_ARRAY) {
+    mXPUSHi(ret);
+  }
+  mXPUSHi(ev.num);
 }
 
-void
+int
 el_history_clear (he)
      HistEdit *he
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(he->hist,&ev,H_CLEAR);
+  RETVAL = history(he->hist,&ev,H_CLEAR);
 }
+OUTPUT:
+  RETVAL
 
-const char *
+void
 el_history_get_first(he)
      HistEdit *he
 PREINIT:
   HistEvent ev;
-CODE:
+PPCODE:
 {
-  history(he->hist,&ev,H_FIRST);
-  RETVAL = ev.str;
+  dTARG;
+  int ret = history(he->hist,&ev,H_FIRST);
+  if (GIMME_V == G_ARRAY) {
+    mXPUSHi(ret);
+  }
+  mXPUSHp(ev.str, strlen(ev.str));
 }
 
-const char *
+void
 el_history_get_last(he)
      HistEdit *he
 PREINIT:
   HistEvent ev;
-CODE:
+PPCODE:
 {
-  history(he->hist,&ev,H_LAST);
-  RETVAL = ev.str;
+  dTARG;
+  int ret = history(he->hist,&ev,H_LAST);
+  if (GIMME_V == G_ARRAY) {
+    mXPUSHi(ret);
+  }
+  mXPUSHp(ev.str, strlen(ev.str));
 }
 
-const char *
+void
 el_history_get_prev(he)
      HistEdit *he
 PREINIT:
   HistEvent ev;
-CODE:
+PPCODE:
 {
-  history(he->hist,&ev,H_PREV);
-  RETVAL = ev.str;
+  dTARG;
+  int ret = history(he->hist,&ev,H_PREV);
+  if (GIMME_V == G_ARRAY) {
+    mXPUSHi(ret);
+  }
+  mXPUSHp(ev.str, strlen(ev.str));
 }
 
 
-const char *
+void
 el_history_get_next(he)
      HistEdit *he
 PREINIT:
   HistEvent ev;
-CODE:
+PPCODE:
 {
-  history(he->hist,&ev,H_NEXT);
-  RETVAL = ev.str;
+  dTARG;
+  int ret = history(he->hist,&ev,H_NEXT);
+  if (GIMME_V == G_ARRAY) {
+    mXPUSHi(ret);
+  }
+  mXPUSHp(ev.str, strlen(ev.str));
 }
 
 
-const char *
+void
 el_history_get_curr(he)
      HistEdit *he
 PREINIT:
   HistEvent ev;
-CODE:
+PPCODE:
 {
-  history(he->hist,&ev,H_CURR);
-  RETVAL = ev.str;
+  dTARG;
+  int ret = history(he->hist,&ev,H_CURR);
+  if (GIMME_V == G_ARRAY) {
+    mXPUSHi(ret);
+  }
+  mXPUSHp(ev.str, strlen(ev.str));
 }
 
-void
+int
 el_history_set(he)
      HistEdit *he
 PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(he->hist,&ev,H_SET);
+  RETVAL = history(he->hist,&ev,H_SET);
 }
+OUTPUT:
+  RETVAL
 
-const char *
+void
 el_history_get_prev_str(he,str)
      HistEdit *he
      char *str
 PREINIT:
   HistEvent ev;
-CODE:
+PPCODE:
 {
-  history(he->hist,&ev,H_PREV_STR,str);
-  RETVAL = ev.str;
+  dTARG;
+  int ret = history(he->hist,&ev,H_PREV_STR,str);
+  if (GIMME_V == G_ARRAY) {
+    mXPUSHi(ret);
+  }
+  mXPUSHp(ev.str, strlen(ev.str));
 }
 
-const char *
+void
 el_history_get_next_str(he,str)
      HistEdit *he
      char *str
 PREINIT:
   HistEvent ev;
-CODE:
+PPCODE:
 {
-  history(he->hist,&ev,H_NEXT_STR,str);
-  RETVAL = ev.str;
+  dTARG;
+  int ret = history(he->hist,&ev,H_NEXT_STR,str);
+  if (GIMME_V == G_ARRAY) {
+    mXPUSHi(ret);
+  }
+  mXPUSHp(ev.str, strlen(ev.str));
 }
 
-void
+int
 el_history_load(he,str)
      HistEdit *he
      char *str
@@ -516,10 +560,12 @@ PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(he->hist,&ev,H_LOAD,str);
+  RETVAL = history(he->hist,&ev,H_LOAD,str);
 }
+OUTPUT:
+  RETVAL
 
-void
+int
 el_history_save(he,str)
      HistEdit *he
      char *str
@@ -527,8 +573,10 @@ PREINIT:
   HistEvent ev;
 CODE:
 {
-  history(he->hist,&ev,H_SAVE,str);
+  RETVAL = history(he->hist,&ev,H_SAVE,str);
 }
+OUTPUT:
+  RETVAL
 
 int
 el_insertstr(he, str)
