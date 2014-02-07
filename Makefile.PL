@@ -1,4 +1,4 @@
-use ExtUtils::MakeMaker;
+use ExtUtils::MakeMaker 6.48;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 
@@ -10,9 +10,12 @@ WriteMakefile(
     'PREREQ_PM'		=> {
          'Test::More' => 0.96,
 	},
-    ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM => 'EditLine.pod', # retrieve abstract from module
-       AUTHOR     => 'Ulrich Burgbacher <ulrich@burgbacher.net>') : ()),
+    'CONFIGURE_REQUIRES' => {
+      "ExtUtils::MakeMaker" => "6.48"
+    },
+    'MIN_PERL_VERSION'  => '5.006000',
+    'ABSTRACT_FROM'     => 'EditLine.pod',
+    'AUTHOR'            => 'Ulrich Burgbacher <ulrich@burgbacher.net>',
     'LIBS'		=> ['-ledit'
 			 .($^O =~ /openbsd/i && ' -lcurses')], # e.g., '-lm'
     'DEFINE'		=> '', # e.g., '-DHAVE_SOMETHING'
