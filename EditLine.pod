@@ -194,6 +194,8 @@ Load the history list stored in FILENAME.
 
 Save the history list to FILENAME.
 
+=back
+
 =head2 Additional functions
 
 The following functions are simply perl wrappers of the C functions
@@ -212,6 +214,8 @@ documented in editline(3):
 =item insertstr
 
 =item deletestr
+
+=back
 
 =head1 EXPORT
 
