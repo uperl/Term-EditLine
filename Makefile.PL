@@ -8,8 +8,8 @@ WriteMakefile(
     'NAME'		=> 'Term::EditLine',
     'VERSION_FROM'	=> 'EditLine.pm', # finds $VERSION
     'PREREQ_PM'		=> {
-         'Test::More' => 0.96,
-	},
+       'Test::More' => 0.96,
+    },
     'CONFIGURE_REQUIRES' => {
       "ExtUtils::MakeMaker" => "6.48"
     },
@@ -18,12 +18,23 @@ WriteMakefile(
     'AUTHOR'            => 'Ulrich Burgbacher <ulrich@burgbacher.net>',
     'LIBS'		=> ['-ledit'
 			 .($^O =~ /openbsd/i && ' -lcurses')], # e.g., '-lm'
-    'DEFINE'		=> '', # e.g., '-DHAVE_SOMETHING'
-    'INC'		=> '-I.', # e.g., '-I. -I/usr/include/other'
-	# Un-comment this if you add C files to link with later:
-    # 'OBJECT'		=> '$(O_FILES)', # link all the C files too
+    'INC'		=> '-I.', 
     'LICENSE'           => 'Perl_5',
     'realclean'         => { FILES => 'const-c.inc  const-xs.inc' },
+    'META_MERGE'        => {
+      "meta-spec" => { version => 2 },
+      "resources" => {
+        "bugtracker" => {
+          "web" => "https://github.com/plicease/Term-EditLine/issues",
+        },
+        "homepage" => "http://perl.wdlabs.com/Term-EditLine/",
+        "repository" => {
+          'type' => 'git',
+          'url'  => 'git://github.com/plicease/Term-EditLine.git',
+          'web'  => 'https://github.com/plicease/Term-EditLine.git',
+        },
+      },
+    },
 );
 if  (eval {require ExtUtils::Constant; 1}) {
   # If you edit these definitions to change the constants used by this module,
