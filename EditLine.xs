@@ -621,7 +621,7 @@ int el_parse(he,...)
         HistEdit * he
 PREINIT:
   int alen,i;
-  char **argv;
+  const char **argv;
   char* tmp;
   STRLEN len;
 PPCODE:
@@ -788,7 +788,7 @@ int el_bind(he,...)
 PREINIT:
   const char *cmd;
   int alen,i;
-  char **argv;
+  const char **argv;
 CODE:
 {
   if (items > 1) {
