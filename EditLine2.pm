@@ -1,4 +1,4 @@
-package Term::EditLine;
+package Term::EditLine2;
 
 use strict;
 use warnings;
@@ -12,7 +12,7 @@ our @ISA = qw(Exporter);
 # names by default without a very good reason. Use EXPORT_OK instead.
 # Do not simply export all your public functions/methods/constants.
 
-# This allows declaration	use Term::EditLine ':all';
+# This allows declaration	use Term::EditLine2 ':all';
 # If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
 # will save memory.
 our %EXPORT_TAGS = ( 'all' => [ qw(
@@ -42,7 +42,7 @@ sub AUTOLOAD {
     ($constname = $AUTOLOAD) =~ s/.*:://;
     if ($constname eq 'constant') {
       require Carp;
-      Carp::croak ("&Term::EditLine::constant not defined");
+      Carp::croak ("&Term::EditLine2::constant not defined");
     }
     my ($error, $val) = constant($constname);
     if ($error) {
@@ -64,7 +64,7 @@ sub AUTOLOAD {
 }
 
 require XSLoader;
-XSLoader::load('Term::EditLine', $VERSION);
+XSLoader::load('Term::EditLine2', $VERSION);
 
 # Preloaded methods go here.
 

@@ -1,9 +1,12 @@
 Term/EditLine version 0.03
 ==========================
 
-Term::EditLine is a object oriented perl interface to the NetBSD editline
+Term::EditLine2 is a object oriented perl interface to the NetBSD editline
 library. To use the module you will have to install this library. Read
 the pod documentation for more information on this module.
+
+This is a fork of the original Term::EditLine2 by Graham Ollis in an
+attempt to get development working again.
 
 INSTALLATION
 
@@ -22,6 +25,8 @@ libedit
 COPYRIGHT AND LICENCE
 
 Copyright (C) 2003 Ulrich Burgbacher
+
+Copyright (C) 2014 Graham Ollis
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

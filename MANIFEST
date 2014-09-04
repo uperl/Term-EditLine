@@ -1,7 +1,7 @@
 Changes
-EditLine.pm
-EditLine.xs
-EditLine.pod
+EditLine2.pm
+EditLine2.xs
+EditLine2.pod
 Makefile.PL
 MANIFEST
 ppport.h

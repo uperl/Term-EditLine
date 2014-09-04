@@ -1,13 +1,13 @@
 
 =head1 NAME
 
-Term::EditLine - Perl interface to the NetBSD editline library
+Term::EditLine2 - Perl interface to the NetBSD editline library
 
 =head1 SYNOPSIS
 
-  use Term::EditLine qw(CC_EOF);
+  use Term::EditLine2 qw(CC_EOF);
 
-  my $el = Term::EditLine->new('progname');
+  my $el = Term::EditLine2->new('progname');
   $el->set_prompt ('# ');
 
   $el->add_fun ('bye','desc',sub { print "\nbye\n"; return CC_EOF; });
@@ -22,7 +22,7 @@ Term::EditLine - Perl interface to the NetBSD editline library
 
 =head1 DESCRIPTION
 
-Term::EditLine is a compiled module, which provides an object oriented
+Term::EditLine2 is a compiled module, which provides an object oriented
 interface to the NetBSD editline library. Since editline supports readline
 and history functions this module is almost a full replacement for the
 Term::ReadLine module even though it is much smaller than any existing
@@ -34,7 +34,7 @@ Term::ReadLine interface.
 
 =item new ( PROGNAME, [ IN, OUT, ERR ] )
 
-Creates a new Term::EditLine object. Argument is the name of
+Creates a new Term::EditLine2 object. Argument is the name of
 the application. Optionally can be followed by three arguments
 for the input, output, and error filehandles. These arguments
 should be globs. See also el_init(3).
@@ -67,7 +67,7 @@ reference to a perl subroutine.
 =item line
 
 Returns three items (in this order): the current string buffer of the 
-Term::EditLine structure, the index of the cursor, and the index of the 
+Term::EditLine2 structure, the index of the cursor, and the index of the 
 last character. 
 
 =item set_getc_fun ( SUBREF )
@@ -78,7 +78,7 @@ It is useful to define a custom getc function, if you want to write an
 interactive program with line editing function that has to process events
 when no input is available. A simple tcp chatclient example:
 
-  use Term::EditLine;
+  use Term::EditLine2;
   use IO::Socket;
   use strict;
 
@@ -90,7 +90,7 @@ when no input is available. A simple tcp chatclient example:
   vec($rin,fileno($sock),1) = 1;
   vec($rin,fileno(STDIN),1) = 1;
 
-  $el = Term::EditLine->new('example');
+  $el = Term::EditLine2->new('example');
 
   $el->set_prompt('$ ');
   $el->set_getc_fun(\&get_c);
@@ -238,18 +238,18 @@ None by default.
 
 The non-blocking interface of libedit sucks. Only ugly hacks make it possible
 to redisplay the prompt when data is displayed from other fds than the libedit
-output fd. Future versions of Term::EditLine will probably contain a modified
+output fd. Future versions of Term::EditLine2 will probably contain a modified
 version of libedit that provides redisplay functions.
 
 =head1 SUPPORT
 
 To report bugs, please use the GitHub bugtracker:
 
-L<https://github.com/plicease/Term-EditLine/issues>
+L<https://github.com/plicease/Term-EditLine2/issues>
 
 To submit patches, please create a pull request on GitHub:
 
-L<https://github.com/plicease/Term-EditLine/pulls>
+L<https://github.com/plicease/Term-EditLine2/pulls>
 
 =head1 SEE ALSO
 

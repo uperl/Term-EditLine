@@ -572,11 +572,11 @@ my @names = (qw(CC_ARGHACK CC_CURSOR CC_EOF CC_ERROR CC_FATAL CC_NEWLINE
 	       H_SET H_SETSIZE));
 
 print constant_types(); # macro defs
-foreach (C_constant ("Term::EditLine", 'constant', 'IV', $types, undef, 3, @names) ) {
+foreach (C_constant ("Term::EditLine2", 'constant', 'IV', $types, undef, 3, @names) ) {
     print $_, "\n"; # C constant subs
 }
 print "#### XS Section:\n";
-print XS_constant ("Term::EditLine", $types);
+print XS_constant ("Term::EditLine2", $types);
 __END__
    */
 

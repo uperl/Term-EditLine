@@ -128,7 +128,7 @@ unsigned char pwrapper (EditLine * e, int k, unsigned int id)
       SPAGAIN;
 
       if(count != 1) {
-	croak ("Term::EditLine: internal error\n");
+	croak ("Term::EditLine2: internal error\n");
       }
 
       ret = POPi;
@@ -164,7 +164,7 @@ pvsubwrapper(HistEdit *he, SV *sub, char *def)
   SPAGAIN;
 
   if (count != 1)
-    croak ("Term::EditLine: error calling perl sub\n");
+    croak ("Term::EditLine2: error calling perl sub\n");
 
   svret = POPs;
 
@@ -225,7 +225,7 @@ int te_getc_fun (EditLine *e, char *c)
     SPAGAIN;
 
     if (count != 1)
-      croak ("Term::EditLine: error calling perl sub\n");
+      croak ("Term::EditLine2: error calling perl sub\n");
 
     svret = POPs;
 
@@ -242,7 +242,7 @@ int te_getc_fun (EditLine *e, char *c)
   return 0;
 }
 
-MODULE = Term::EditLine		PACKAGE = Term::EditLine   PREFIX = el_
+MODULE = Term::EditLine2	PACKAGE = Term::EditLine2   PREFIX = el_
 INCLUDE: const-xs.inc
 
 void
@@ -311,7 +311,7 @@ CODE:
   
   RETVAL->el = el_init(name, fin, fout, ferr);
   RETVAL->el_ref = newSVsv(sv_newmortal());
-  sv_setref_pv(RETVAL->el_ref,"Term::EditLine",(void*)RETVAL);  
+  sv_setref_pv(RETVAL->el_ref,"Term::EditLine2",(void*)RETVAL);  
 
   RETVAL->promptSv = NULL;
   RETVAL->prompt = NULL;
@@ -831,7 +831,7 @@ CODE:
     }
 
   if(i == 32) {
-    croak("Term::EditLine: Error: you can only add up to 32 functions\n");
+    croak("Term::EditLine2: Error: you can only add up to 32 functions\n");
     RETVAL = -1;
   } else {
     RETVAL = el_set(he->el,EL_ADDFN,name,help,uf_tbl[i].cwrapper);

@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use utf8;
 use Test::More;
-use Term::EditLine;
+use Term::EditLine2;
 
 my $el;
 
@@ -149,7 +149,7 @@ subtest 'history_save, history_load' => sub {
         $el->history_enter('fuga');
         is($el->history_save('t/history.dat'), 2);
 
-        my $el2 = Term::EditLine->new($0);
+        my $el2 = Term::EditLine2->new($0);
         is($el2->history_get_size(), 0);
         $el2->history_load('t/history.dat');
         is($el2->history_get_size(), 2);
@@ -162,6 +162,6 @@ done_testing;
 
 sub context {
     my ($name, $code) = @_;
-    $el = Term::EditLine->new($0);
+    $el = Term::EditLine2->new($0);
     goto &Test::More::subtest;
 }

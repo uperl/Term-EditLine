@@ -5,8 +5,8 @@ use ExtUtils::MakeMaker 6.48;
 
 
 WriteMakefile(
-    'NAME'		=> 'Term::EditLine',
-    'VERSION_FROM'	=> 'EditLine.pm', # finds $VERSION
+    'NAME'		=> 'Term::EditLine2',
+    'VERSION_FROM'	=> 'EditLine2.pm', # finds $VERSION
     'PREREQ_PM'		=> {
        'Test::More' => 0.96,
     },
@@ -14,7 +14,7 @@ WriteMakefile(
       "ExtUtils::MakeMaker" => "6.48"
     },
     'MIN_PERL_VERSION'  => '5.006000',
-    'ABSTRACT_FROM'     => 'EditLine.pod',
+    'ABSTRACT_FROM'     => 'EditLine2.pod',
     'AUTHOR'            => 'Ulrich Burgbacher <ulrich@burgbacher.net>',
     'LIBS'		=> ['-ledit'
 			 .($^O =~ /openbsd/i && ' -lcurses')], # e.g., '-lm'
@@ -25,13 +25,13 @@ WriteMakefile(
       "meta-spec" => { version => 2 },
       "resources" => {
         "bugtracker" => {
-          "web" => "https://github.com/plicease/Term-EditLine/issues",
+          "web" => "https://github.com/plicease/Term-EditLine2/issues",
         },
-        "homepage" => "http://perl.wdlabs.com/Term-EditLine/",
+        "homepage" => "http://perl.wdlabs.com/Term-EditLine2/",
         "repository" => {
           'type' => 'git',
-          'url'  => 'git://github.com/plicease/Term-EditLine.git',
-          'web'  => 'https://github.com/plicease/Term-EditLine.git',
+          'url'  => 'git://github.com/plicease/Term-EditLine2.git',
+          'web'  => 'https://github.com/plicease/Term-EditLine2.git',
         },
       },
     },
@@ -50,7 +50,7 @@ if  (eval {require ExtUtils::Constant; 1}) {
 		 H_LOAD H_NEXT H_NEXT_EVENT H_NEXT_STR H_PREV H_PREV_EVENT
 		 H_PREV_STR H_SAVE H_SET H_SETSIZE));
   ExtUtils::Constant::WriteConstants(
-                                     NAME         => 'Term::EditLine',
+                                     NAME         => 'Term::EditLine2',
                                      NAMES        => \@names,
                                      DEFAULT_TYPE => 'IV',
                                      C_FILE       => 'const-c.inc',
