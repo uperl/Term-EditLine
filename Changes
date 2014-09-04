@@ -1,6 +1,7 @@
 Revision history for Perl extension Term::EditLine.
 
   - forked from Term::EditLine to Term::EditLine2
+  - use Alien::Editline to locate editline library
 
 0.05  Sun Jan 25 21:01:33 2004
   - added $el->set_line, not really tested, maybe buggy

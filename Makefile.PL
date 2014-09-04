@@ -1,8 +1,9 @@
 use ExtUtils::MakeMaker 6.48;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
+use Alien::Editline;
 
-
+my $alien = Alien::Editline->new;
 
 WriteMakefile(
     'NAME'		=> 'Term::EditLine2',
@@ -11,13 +12,14 @@ WriteMakefile(
        'Test::More' => 0.96,
     },
     'CONFIGURE_REQUIRES' => {
-      "ExtUtils::MakeMaker" => "6.48"
+      "ExtUtils::MakeMaker" => "6.48",
+      "Alien::EditLine2"    => 0,
     },
     'MIN_PERL_VERSION'  => '5.006000',
     'ABSTRACT_FROM'     => 'EditLine2.pod',
-    'AUTHOR'            => 'Ulrich Burgbacher <ulrich@burgbacher.net>',
-    'LIBS'		=> ['-ledit'
-			 .($^O =~ /openbsd/i && ' -lcurses')], # e.g., '-lm'
+    'AUTHOR'            => 'Graham Ollis <plicease@cpan.org>',
+    'LIBS'		=> [ $alien->libs ], # .($^O =~ /openbsd/i && ' -lcurses')], 
+    'CCFLAGS'           => $alien->cflags,
     'INC'		=> '-I.', 
     'LICENSE'           => 'Perl_5',
     'realclean'         => { FILES => 'const-c.inc  const-xs.inc' },
