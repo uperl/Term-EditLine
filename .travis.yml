@@ -3,7 +3,8 @@ language: perl
 install:
   - sudo apt-get update
   - sudo apt-get install libedit-dev
-  - cpanm -v --installdeps .
+  - cpanm -n -v https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Alien-Editline-0.02.tar.gz
+  - cpanm -n -v --installdeps .
 
 perl:
   - "5.8"
