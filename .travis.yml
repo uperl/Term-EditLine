@@ -1,7 +1,9 @@
 language: perl
 
 install:
-  - cpanm --installdeps .
+  - sudo apt-get update
+  - sudo apt-get install libedit-dev
+  - cpanm -v --installdeps .
 
 perl:
   - "5.8"
