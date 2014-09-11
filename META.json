@@ -27,7 +27,7 @@
       },
       "configure" : {
          "requires" : {
-            "Alien::Editline" : "0",
+            "Alien::Editline" : "0.02",
             "ExtUtils::MakeMaker" : "6.48"
          }
       },
@@ -50,5 +50,5 @@
          "web" : "https://github.com/plicease/Term-EditLine2.git"
       }
    },
-   "version" : "0.05"
+   "version" : "0.06"
 }
