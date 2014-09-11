@@ -250,6 +250,11 @@ as soon as he could figure out how, and I never heard back from him despite
 numerous attempts at contact.  I requested transfer via the modules mailing
 list, and heard crickets in response.  So I have forked this as L<Term::EditLine2>.
 
+The main differences between this version and the original is that this version
+uses L<Alien::Editline> to find the editline library (either from the OS or
+by downloading and building the source code).  It also includes a number of
+bug fixes and features requests.
+
 =head1 SUPPORT
 
 To report bugs, please use the GitHub bugtracker:
