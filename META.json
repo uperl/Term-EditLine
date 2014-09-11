@@ -27,7 +27,7 @@
       },
       "configure" : {
          "requires" : {
-            "Alien::EditLine2" : "0",
+            "Alien::Editline" : "0",
             "ExtUtils::MakeMaker" : "6.48"
          }
       },
