@@ -13,7 +13,7 @@ WriteMakefile(
     },
     'CONFIGURE_REQUIRES' => {
       "ExtUtils::MakeMaker" => "6.48",
-      "Alien::EditLine2"    => 0,
+      "Alien::Editline"    => 0,
     },
     'MIN_PERL_VERSION'  => '5.006000',
     'ABSTRACT_FROM'     => 'EditLine2.pod',
