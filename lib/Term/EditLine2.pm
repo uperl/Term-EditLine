@@ -2,6 +2,7 @@ package Term::EditLine2;
 
 use strict;
 use warnings;
+use 5.008001;
 use base qw( Term::EditLine );
 use Term::EditLine qw( :all );
 use Carp qw( carp );

@@ -1,3 +1,10 @@
+BEGIN {
+  unless(eval q{ use 5.008001; 1}) {
+    print "Perl 5.008001 or better required\n";
+    exit;
+  }
+}
+
 use ExtUtils::MakeMaker 6.48;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
@@ -15,7 +22,7 @@ WriteMakefile(
       "ExtUtils::MakeMaker" => "6.48",
       "Alien::Editline"    => "0.02",
     },
-    'MIN_PERL_VERSION'  => '5.006000',
+    'MIN_PERL_VERSION'  => '5.008001',
     'ABSTRACT_FROM'     => 'lib/Term/EditLine.pm',
     'AUTHOR'            => 'Graham Ollis <plicease@cpan.org>',
     'LIBS'		=> [ $alien->libs ], # .($^O =~ /openbsd/i && ' -lcurses')], 

@@ -2,6 +2,7 @@ package Term::EditLine;
 
 use strict;
 use warnings;
+use 5.008001;
 
 require Exporter;
 use AutoLoader;
