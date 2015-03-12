@@ -7,7 +7,7 @@ my $alien = Alien::Editline->new;
 
 WriteMakefile(
     'NAME'		=> 'Term::EditLine',
-    'VERSION_FROM'	=> 'EditLine.pm', # finds $VERSION
+    'VERSION_FROM'	=> 'lib/Term/EditLine.pm', # finds $VERSION
     'PREREQ_PM'		=> {
        'Test::More' => 0.96,
     },
@@ -16,7 +16,7 @@ WriteMakefile(
       "Alien::Editline"    => "0.02",
     },
     'MIN_PERL_VERSION'  => '5.006000',
-    'ABSTRACT_FROM'     => 'EditLine.pod',
+    'ABSTRACT_FROM'     => 'lib/Term/EditLine.pod',
     'AUTHOR'            => 'Graham Ollis <plicease@cpan.org>',
     'LIBS'		=> [ $alien->libs ], # .($^O =~ /openbsd/i && ' -lcurses')], 
     'CCFLAGS'           => $alien->cflags,

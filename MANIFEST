@@ -1,10 +1,10 @@
 .travis.yml
 Changes
-EditLine.pm
-EditLine.pod
 EditLine.xs
 fallback/const-c.inc
 fallback/const-xs.inc
+lib/Term/EditLine.pm
+lib/Term/EditLine.pod
 LICENSE
 Makefile.PL
 MANIFEST

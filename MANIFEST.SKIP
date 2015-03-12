@@ -86,3 +86,5 @@
 \.bundle$
 \.dylib$
 
+^const-c\.inc$
+^const-xs\.inc$

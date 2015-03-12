@@ -11,3 +11,4 @@
 /Term-EditLine-*.tar.gz
 /Term-EditLine-*/
 *.bak
+*.old
