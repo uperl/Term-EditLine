@@ -16,7 +16,7 @@ WriteMakefile(
       "Alien::Editline"    => "0.02",
     },
     'MIN_PERL_VERSION'  => '5.006000',
-    'ABSTRACT_FROM'     => 'lib/Term/EditLine.pod',
+    'ABSTRACT_FROM'     => 'lib/Term/EditLine.pm',
     'AUTHOR'            => 'Graham Ollis <plicease@cpan.org>',
     'LIBS'		=> [ $alien->libs ], # .($^O =~ /openbsd/i && ' -lcurses')], 
     'CCFLAGS'           => $alien->cflags,

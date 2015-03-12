@@ -88,3 +88,4 @@
 
 ^const-c\.inc$
 ^const-xs\.inc$
+^EditLine.c$
