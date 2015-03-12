@@ -1,5 +1,6 @@
 Revision history for Perl extension Term::EditLine.
 
+0.07  Thu Mar 12, 2015
   - integrated back in to Term::EditLine
   - Term::EditLine2 will be deprecated, but not before September
     12, 2015

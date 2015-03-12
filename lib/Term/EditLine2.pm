@@ -13,7 +13,7 @@ our @EXPORT = @Term::EditLine::EXPORT;
 our @EXPORT_OK = @Term::EditLine::EXPORT_OK;
 our %EXPORT_TAGS = @Term::EditLine::EXPORT_TAGS;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 =head1 NAME
 
