@@ -6,8 +6,8 @@ use Alien::Editline;
 my $alien = Alien::Editline->new;
 
 WriteMakefile(
-    'NAME'		=> 'Term::EditLine2',
-    'VERSION_FROM'	=> 'EditLine2.pm', # finds $VERSION
+    'NAME'		=> 'Term::EditLine',
+    'VERSION_FROM'	=> 'EditLine.pm', # finds $VERSION
     'PREREQ_PM'		=> {
        'Test::More' => 0.96,
     },
@@ -16,7 +16,7 @@ WriteMakefile(
       "Alien::Editline"    => "0.02",
     },
     'MIN_PERL_VERSION'  => '5.006000',
-    'ABSTRACT_FROM'     => 'EditLine2.pod',
+    'ABSTRACT_FROM'     => 'EditLine.pod',
     'AUTHOR'            => 'Graham Ollis <plicease@cpan.org>',
     'LIBS'		=> [ $alien->libs ], # .($^O =~ /openbsd/i && ' -lcurses')], 
     'CCFLAGS'           => $alien->cflags,
@@ -27,13 +27,13 @@ WriteMakefile(
       "meta-spec" => { version => 2 },
       "resources" => {
         "bugtracker" => {
-          "web" => "https://github.com/plicease/Term-EditLine2/issues",
+          "web" => "https://github.com/plicease/Term-EditLine/issues",
         },
-        "homepage" => "http://perl.wdlabs.com/Term-EditLine2/",
+        "homepage" => "http://perl.wdlabs.com/Term-EditLine/",
         "repository" => {
           'type' => 'git',
-          'url'  => 'git://github.com/plicease/Term-EditLine2.git',
-          'web'  => 'https://github.com/plicease/Term-EditLine2.git',
+          'url'  => 'git://github.com/plicease/Term-EditLine.git',
+          'web'  => 'https://github.com/plicease/Term-EditLine.git',
         },
       },
     },
@@ -52,7 +52,7 @@ if  (eval {require ExtUtils::Constant; 1}) {
 		 H_LOAD H_NEXT H_NEXT_EVENT H_NEXT_STR H_PREV H_PREV_EVENT
 		 H_PREV_STR H_SAVE H_SET H_SETSIZE));
   ExtUtils::Constant::WriteConstants(
-                                     NAME         => 'Term::EditLine2',
+                                     NAME         => 'Term::EditLine',
                                      NAMES        => \@names,
                                      DEFAULT_TYPE => 'IV',
                                      C_FILE       => 'const-c.inc',

@@ -1,8 +1,8 @@
 .travis.yml
 Changes
-EditLine2.pm
-EditLine2.pod
-EditLine2.xs
+EditLine.pm
+EditLine.pod
+EditLine.xs
 fallback/const-c.inc
 fallback/const-xs.inc
 LICENSE

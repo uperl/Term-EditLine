@@ -6,7 +6,7 @@
 # change 'tests => 2' to 'tests => last_test_to_print';
 
 use Test::More tests => 2;
-BEGIN { use_ok('Term::EditLine2') };
+BEGIN { use_ok('Term::EditLine') };
 
 
 my $fail = 0;

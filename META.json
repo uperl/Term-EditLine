@@ -4,7 +4,7 @@
       "Graham Ollis <plicease@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.142060",
+   "generated_by" : "ExtUtils::MakeMaker version 7.04, CPAN::Meta::Converter version 2.143240",
    "license" : [
       "perl_5"
    ],
@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "Term-EditLine2",
+   "name" : "Term-EditLine",
    "no_index" : {
       "directory" : [
          "t",
@@ -41,13 +41,13 @@
    "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/plicease/Term-EditLine2/issues"
+         "web" : "https://github.com/plicease/Term-EditLine/issues"
       },
-      "homepage" : "http://perl.wdlabs.com/Term-EditLine2/",
+      "homepage" : "http://perl.wdlabs.com/Term-EditLine/",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/plicease/Term-EditLine2.git",
-         "web" : "https://github.com/plicease/Term-EditLine2.git"
+         "url" : "git://github.com/plicease/Term-EditLine.git",
+         "web" : "https://github.com/plicease/Term-EditLine.git"
       }
    },
    "version" : "0.06"

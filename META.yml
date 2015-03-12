@@ -8,12 +8,12 @@ configure_requires:
   Alien::Editline: '0.02'
   ExtUtils::MakeMaker: '6.48'
 dynamic_config: 1
-generated_by: 'ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.142060'
+generated_by: 'ExtUtils::MakeMaker version 7.04, CPAN::Meta::Converter version 2.143240'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: '1.4'
-name: Term-EditLine2
+name: Term-EditLine
 no_index:
   directory:
     - t
@@ -22,7 +22,7 @@ requires:
   Test::More: '0.96'
   perl: '5.006000'
 resources:
-  bugtracker: https://github.com/plicease/Term-EditLine2/issues
-  homepage: http://perl.wdlabs.com/Term-EditLine2/
-  repository: git://github.com/plicease/Term-EditLine2.git
+  bugtracker: https://github.com/plicease/Term-EditLine/issues
+  homepage: http://perl.wdlabs.com/Term-EditLine/
+  repository: git://github.com/plicease/Term-EditLine.git
 version: '0.06'
