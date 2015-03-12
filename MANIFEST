@@ -8,8 +8,6 @@ lib/Term/EditLine2.pm
 LICENSE
 Makefile.PL
 MANIFEST
-META.json
-META.yml
 ppport.h
 README
 t/1.t
