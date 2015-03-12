@@ -17,7 +17,7 @@ our $VERSION = '0.07';
 
 =head1 NAME
 
-Term::EditLine2
+Term::EditLine2 - Deprecated compatability interface for Term::EditLine
 
 =head1 SYNOPSIS
 
