@@ -4,6 +4,9 @@ use strict;
 use warnings;
 use base qw( Term::EditLine );
 use Term::EditLine qw( :all );
+use Carp qw( carp );
+
+carp "Term::EditLine2 is deprecated, please use Term::EditLine instead";
 
 our @EXPORT = @Term::EditLine::EXPORT;
 our @EXPORT_OK = @Term::EditLine::EXPORT_OK;
