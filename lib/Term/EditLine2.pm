@@ -25,7 +25,7 @@ Term::EditLine2
 
 =head1 DESCRIPTION
 
-This was originall a fork of L<Term::EditLine>, which has since
+This was originally a fork of L<Term::EditLine>, which has since
 been reintegrated into the original L<Term::EditLine>.  This module
 remains as a compatability interface.  I believe the users of
 this fork to be relatively small (if any) so I will be deprecating
