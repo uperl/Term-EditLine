@@ -5,7 +5,7 @@ BEGIN {
   }
 }
 
-use ExtUtils::MakeMaker 6.48;
+use ExtUtils::MakeMaker 6.52;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 use Alien::Editline;
@@ -19,17 +19,17 @@ WriteMakefile(
        'Test::More' => 0.96,
     },
     'CONFIGURE_REQUIRES' => {
-      "ExtUtils::MakeMaker" => "6.48",
+      "ExtUtils::MakeMaker" => "6.52",
       "Alien::Editline"    => "0.02",
     },
     'MIN_PERL_VERSION'  => '5.008001',
     'ABSTRACT_FROM'     => 'lib/Term/EditLine.pm',
-    'AUTHOR'            => 'Graham Ollis <plicease@cpan.org>',
+    'AUTHOR'            => [ 'Graham Ollis <plicease@cpan.org>', 'Ulrich Burgbacher, <ulrich@burgbacher.net>' ],
     'LIBS'		=> [ $alien->libs ], # .($^O =~ /openbsd/i && ' -lcurses')], 
     'CCFLAGS'           => $alien->cflags,
     'INC'		=> '-I.', 
     'LICENSE'           => 'Perl_5',
-    'realclean'         => { FILES => 'const-c.inc  const-xs.inc' },
+    'realclean'         => { FILES => 'const-c.inc  const-xs.inc Term-EditLine-*' },
     'META_MERGE'        => {
       "meta-spec" => { version => 2 },
       "resources" => {
