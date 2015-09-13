@@ -1,5 +1,13 @@
 Revision history for Perl extension Term::EditLine.
 
+  - Remove Term::EditLine2
+    The original language was the module would be deprecated but
+    not before September 12, 2015, but it should have been
+    "Term::EditLine2 IS deprecated, but will not be REMOVED before
+    September 12, 2015".  I apologize for the wording, though I
+    still feel that the migration to be dead simple, and the number
+    of users using Term::EditLine is probably zero.
+
 0.07  Thu Mar 12, 2015
   - integrated back in to Term::EditLine
   - Term::EditLine2 will be deprecated, but not before September

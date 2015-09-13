@@ -5,7 +5,6 @@ EditLine.xs
 fallback/const-c.inc
 fallback/const-xs.inc
 lib/Term/EditLine.pm
-lib/Term/EditLine2.pm
 LICENSE
 Makefile.PL
 MANIFEST
