@@ -12,6 +12,4 @@ ppport.h
 README
 t/1.t
 t/2.t
-t/deprecate1.t
-t/deprecate2.t
 typemap
