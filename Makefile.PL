@@ -5,6 +5,8 @@ BEGIN {
   }
 }
 
+use strict;
+use warnings;
 use Config;
 use ExtUtils::MakeMaker 6.52;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
@@ -18,12 +20,13 @@ my $alien   = 1;
 
 foreach my $pkg_config ($ENV{PKG_CONFIG}, 'pkg-config', 'pkgconf')
 {
+  next unless defined $pkg_config;
   next if defined $ENV{ALIEN_INSTALL_TYPE} && $ENV{ALIEN_INSTALL_TYPE} eq 'share';
 
   system $pkg_config, '--exists', 'libedit';
   if($? == 0)
   {
-    $cflags = join ' ', `$pkg_config --cflags libedit`, $ccflags;
+    $ccflags = join ' ', `$pkg_config --cflags libedit`, $ccflags;
     $libs   = `$pkg_config --libs libedit`;
     $alien  = 0;
     last;
