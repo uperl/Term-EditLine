@@ -5,12 +5,37 @@ BEGIN {
   }
 }
 
+use Config;
 use ExtUtils::MakeMaker 6.52;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 use Alien::Editline;
 
-my $alien = Alien::Editline->new;
+my $cc      = $Config{cc};
+my $ld      = $Config{ld};
+my $libs    = '';
+my $ccflags = $Config{ccflags};
+my $alien   = 1;
+
+foreach my $pkg_config ($ENV{PKG_CONFIG}, 'pkg-config', 'pkgconf')
+{
+  next if defined $ENV{ALIEN_INSTALL_TYPE} && $ENV{ALIEN_INSTALL_TYPE} eq 'share';
+
+  system $pkg_config, '--exists', 'libedit';
+  if($? == 0)
+  {
+    $cflags = join ' ', `$pkg_config --cflags libedit`, $ccflags;
+    $libs   = `$pkg_config --libs libedit`;
+    $alien  = 0;
+    last;
+  }
+}
+
+if($alien)
+{
+  $cc = '$(FULLPERL) -Iinc -MAlien::Base::Wrapper=Alien::Editline -e cc --';
+  $ld = '$(FULLPERL) -Iinc -MAlien::Base::Wrapper=Alien::Editline -e ld --';
+}
 
 WriteMakefile(
     'NAME'		=> 'Term::EditLine',
@@ -20,13 +45,17 @@ WriteMakefile(
     },
     'CONFIGURE_REQUIRES' => {
       "ExtUtils::MakeMaker" => "6.52",
-      "Alien::Editline"    => "0.02",
+    },
+    'BUILD_REQUIRES' => {
+      $alien ? ("Alien::Editline" => '0.07') : (),
     },
     'MIN_PERL_VERSION'  => '5.008001',
     'ABSTRACT_FROM'     => 'lib/Term/EditLine.pm',
     'AUTHOR'            => [ 'Graham Ollis <plicease@cpan.org>', 'Ulrich Burgbacher, <ulrich@burgbacher.net>' ],
-    'LIBS'		=> [ $alien->libs ], # .($^O =~ /openbsd/i && ' -lcurses')], 
-    'CCFLAGS'           => $alien->cflags,
+    'CC'                => $cc,
+    'LD'                => $ld,
+    'LIBS'		=> [ $libs ], 
+    'CCFLAGS'           => $ccflags,
     'INC'		=> '-I.', 
     'LICENSE'           => 'Perl_5',
     'realclean'         => { FILES => 'const-c.inc  const-xs.inc Term-EditLine-*' },

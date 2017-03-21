@@ -1,5 +1,8 @@
 Revision history for Perl extension Term::EditLine.
 
+  - Only require Alien::Editline as a build requires, and only
+    if libedit cannot be discovered via pkg-config.
+
 0.09  Mon Dec 14, 2015
   - Updated MANIFEST to remove files that had been removed in
     the previous release.

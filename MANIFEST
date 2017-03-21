@@ -4,8 +4,10 @@ Changes
 EditLine.xs
 fallback/const-c.inc
 fallback/const-xs.inc
+inc/Alien/Base/Wrapper.pm
 lib/Term/EditLine.pm
 LICENSE
+maint/releaseprep
 Makefile.PL
 MANIFEST
 ppport.h
