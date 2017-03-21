@@ -9,7 +9,6 @@ use Config;
 use ExtUtils::MakeMaker 6.52;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
-use Alien::Editline;
 
 my $cc      = $Config{cc};
 my $ld      = $Config{ld};
