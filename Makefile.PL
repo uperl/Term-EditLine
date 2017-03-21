@@ -26,8 +26,10 @@ foreach my $pkg_config ($ENV{PKG_CONFIG}, 'pkg-config', 'pkgconf')
   system $pkg_config, '--exists', 'libedit';
   if($? == 0)
   {
-    $ccflags = join ' ', `$pkg_config --cflags libedit`, $ccflags;
+    chomp(my $add_ccflags = `$pkg_config --cflags libedit`);
+    $ccflags = join ' ', $add_ccflags, $ccflags;
     $libs   = `$pkg_config --libs libedit`;
+    chomp $libs;
     $alien  = 0;
     last;
   }
