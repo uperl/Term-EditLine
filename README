@@ -1,17 +1,21 @@
 Term::EditLine
 ==============
 
-Term::EditLine is a object oriented perl interface to the NetBSD editline
-library. To use the module you will have to install this library. Read
+Term::EditLine is an object oriented perl interface to the NetBSD editline
+library. To use the module you will have to install this library first. Read
 the pod documentation for more information on this module.
 
 INSTALLATION
 
+Install libedit, for instance with this command in Ubuntu:
+
+    sudo apt install libedit-dev
+    
 To install this module type the following:
 
-   perl Makefile.PL
-   make
-   make install
+    perl Makefile.PL
+    make
+    make install
 
 DEPENDENCIES
 
