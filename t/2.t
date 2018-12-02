@@ -1,4 +1,4 @@
-use strict;
+use strict; # -*- mode: perl -*-
 use warnings;
 use utf8;
 use Test::More;
