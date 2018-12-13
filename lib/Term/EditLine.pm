@@ -92,7 +92,7 @@ Term::EditLine - Perl interface to the NetBSD editline library
   $el->parse('bind','-e');
   $el->parse('bind','^D','bye');
 
-  while (defined($_ = $el->gets())) {
+  while (defined(my $line = $el->gets())) {
     $el->history_enter($_);
     print $_;
   }
