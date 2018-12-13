@@ -2,14 +2,19 @@ Term::EditLine
 ==============
 
 Term::EditLine is an object oriented perl interface to the NetBSD editline
-library. To use the module you will have to install this library first. Read
+library. To use the module you can install that library first, but it
+can fall back to Alien::Editline if it's not present. Read
 the pod documentation for more information on this module.
 
 INSTALLATION
 
-Install libedit, for instance with this command in Ubuntu:
+Install libedit if you want to use that option, for instance with this command in Ubuntu:
 
     sudo apt install libedit-dev
+
+Install pkgconf with
+
+    sudo apt install pkgconf
     
 To install this module type the following:
 
