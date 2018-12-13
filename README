@@ -8,7 +8,8 @@ the pod documentation for more information on this module.
 
 INSTALLATION
 
-Install libedit if you want to use that option, for instance with this command in Ubuntu:
+Install libedit if you want to use that option, for instance with this
+command in Debian based distributions, including Ubuntu: 
 
     sudo apt install libedit-dev
 
