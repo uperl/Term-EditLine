@@ -13,6 +13,10 @@ command in Debian based distributions, including Ubuntu:
 
     sudo apt install libedit-dev
 
+Or, for RedHat-like distros
+
+    sudo yum install libedit-devel
+
 Install pkgconf with
 
     sudo apt install pkgconf
