@@ -83,15 +83,15 @@ Term::EditLine - Perl interface to the NetBSD editline library
 =head1 SYNOPSIS
 
   use Term::EditLine qw(CC_EOF);
-
+ 
   my $el = Term::EditLine->new('progname');
   $el->set_prompt ('# ');
-
+ 
   $el->add_fun ('bye','desc',sub { print "\nbye\n"; return CC_EOF; });
-
+ 
   $el->parse('bind','-e');
   $el->parse('bind','^D','bye');
-
+ 
   while (defined(my $line = $el->gets())) {
     $el->history_enter($_);
     print $_;
@@ -143,41 +143,41 @@ reference to a perl subroutine.
 
 =item line
 
-Returns three items (in this order): the current string buffer of the 
-Term::EditLine structure, the index of the cursor, and the index of the 
-last character. 
+Returns three items (in this order): the current string buffer of the
+Term::EditLine structure, the index of the cursor, and the index of the
+last character.
 
 =item set_getc_fun ( SUBREF )
 
 Define the character reading function as SUBREF. This function is to
 return one single character. It is called internally by gets() and getc().
-It is useful to define a custom getc function, if you want to write an 
+It is useful to define a custom getc function, if you want to write an
 interactive program with line editing function that has to process events
 when no input is available. A simple tcp chatclient example:
 
   use Term::EditLine;
   use IO::Socket;
   use strict;
-
+ 
   my ($sock,$el,$rin,$buf);
-
+ 
   $sock = IO::Socket::INET->new("$ARGV[0]:$ARGV[1]") or die "...";
-
+ 
   $rin = '';
   vec($rin,fileno($sock),1) = 1;
   vec($rin,fileno(STDIN),1) = 1;
-
+ 
   $el = Term::EditLine->new('example');
-
+ 
   $el->set_prompt('$ ');
   $el->set_getc_fun(\&get_c);
   $el->bind('-e');
-
+ 
   while (defined($_ = $el->gets)) {
     chomp;
     syswrite($sock,"$_\n",length($_)+1);
   }
-
+ 
   sub get_c {
     my ($tmp,$i,$c);
     while (1) {
@@ -355,7 +355,7 @@ Graham Ollis E<lt>plicease@cpan.orgE<gt>
 Copyright 2003 by Ulrich Burgbacher
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
+it under the same terms as Perl itself.
 
 =cut
 
