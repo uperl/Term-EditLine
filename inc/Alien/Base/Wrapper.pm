@@ -58,7 +58,7 @@ sub import
     *{"${caller}::cc"} = \&cc;
     *{"${caller}::ld"} = \&ld;
   }
-  
+
   foreach my $alien (@aliens)
   {
     $alien = "Alien::$alien" unless $alien =~ /::/;
@@ -77,10 +77,10 @@ sub import
       $cflags = $alien->cflags;
       $libs   = $alien->libs;
     }
-    
+
     @cflags_I  = grep  /^-I/, shellwords $cflags;
     @cflags    = grep !/^-I/, shellwords $cflags;
-    
+
     @ldflags_L = grep  /^-L/, shellwords $libs;
     @libs      = grep !/^-L/, shellwords $libs;
   }

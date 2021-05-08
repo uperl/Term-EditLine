@@ -58,22 +58,22 @@ WriteMakefile(
     'AUTHOR'            => [ 'Graham Ollis <plicease@cpan.org>', 'Ulrich Burgbacher, <ulrich@burgbacher.net>' ],
     'CC'                => $cc,
     'LD'                => $ld,
-    'LIBS'		=> [ $libs ], 
+    'LIBS'		=> [ $libs ],
     'CCFLAGS'           => $ccflags,
-    'INC'		=> '-I.', 
+    'INC'		=> '-I.',
     'LICENSE'           => 'Perl_5',
     'realclean'         => { FILES => 'const-c.inc  const-xs.inc Term-EditLine-*' },
     'META_MERGE'        => {
       "meta-spec" => { version => 2 },
       "resources" => {
         "bugtracker" => {
-          "web" => "https://github.com/plicease/Term-EditLine/issues",
+          "web" => "https://github.com/uperl/Term-EditLine/issues",
         },
         "homepage" => "http://perl.wdlabs.com/Term-EditLine/",
         "repository" => {
           'type' => 'git',
-          'url'  => 'git://github.com/plicease/Term-EditLine.git',
-          'web'  => 'https://github.com/plicease/Term-EditLine.git',
+          'url'  => 'git://github.com/uperl/Term-EditLine.git',
+          'web'  => 'https://github.com/uperl/Term-EditLine.git',
         },
       },
     },

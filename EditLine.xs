@@ -21,7 +21,7 @@ typedef struct _HistEdit {
   SV *promptSv;     /* perl prompt subref */
   SV *rpromptSv;    /* perl rprompt subref */
   SV *getcSv;       /* perl EL_GETCFN subref */
-  char *prompt; 
+  char *prompt;
   char *rprompt;
 } HistEdit;
 
@@ -213,13 +213,13 @@ int te_getc_fun (EditLine *e, char *c)
   if (he->getcSv != NULL) {
 
     dSP;
-    
+
     ENTER;
     SAVETMPS;
     PUSHMARK(SP);
     XPUSHs(he->el_ref);
     PUTBACK;
-  
+
     count = perl_call_sv(he->getcSv,G_SCALAR);
 
     SPAGAIN;
@@ -308,10 +308,10 @@ CODE:
 {
 
   RETVAL = malloc(sizeof(HistEdit));
-  
+
   RETVAL->el = el_init(name, fin, fout, ferr);
   RETVAL->el_ref = newSVsv(sv_newmortal());
-  sv_setref_pv(RETVAL->el_ref,"Term::EditLine",(void*)RETVAL);  
+  sv_setref_pv(RETVAL->el_ref,"Term::EditLine",(void*)RETVAL);
 
   RETVAL->promptSv = NULL;
   RETVAL->prompt = NULL;
@@ -337,7 +337,7 @@ SV *el;
 CODE:
 {
   if(he->prompt != NULL)
-    free(he->prompt);  
+    free(he->prompt);
   if(he->rprompt != NULL)
     free(he->rprompt);
   if(he->promptSv != NULL) {
@@ -613,7 +613,7 @@ CODE:
   l->lastchar = buffer+strlen(buffer);
   if(buffer+cursor > l->lastchar)
     l->cursor = l->lastchar;
-  else 
+  else
     l->cursor = buffer+cursor;
 }
 
@@ -629,7 +629,7 @@ PPCODE:
   if (items > 1) {
 
     argv = malloc(sizeof(char*)*items);
-    
+
     alen = items - 1;
 
     for(i=1;i<items;i++) {
@@ -727,7 +727,7 @@ PPCODE:
     XPUSHs(sv_2mortal(he->promptSv));
   else if(he->prompt != NULL)
     XPUSHs(sv_2mortal(newSVpv(he->prompt,0)));
-  else 
+  else
     XSRETURN_UNDEF;
 }
 
@@ -739,7 +739,7 @@ PPCODE:
     XPUSHs(sv_2mortal(he->rpromptSv));
   else if(he->rprompt != NULL)
     XPUSHs(sv_2mortal(newSVpv(he->rprompt,0)));
-  else 
+  else
     XSRETURN_UNDEF;
 }
 
