@@ -322,11 +322,11 @@ version of libedit that provides redisplay functions.
 
 To report bugs, please use the GitHub bugtracker:
 
-L<https://github.com/plicease/Term-EditLine/issues>
+L<https://github.com/uperl/Term-EditLine/issues>
 
 To submit patches, please create a pull request on GitHub:
 
-L<https://github.com/plicease/Term-EditLine/pulls>
+L<https://github.com/uperl/Term-EditLine/pulls>
 
 =head1 SEE ALSO
 
