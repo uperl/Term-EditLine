@@ -4,6 +4,9 @@ use strict;
 use warnings;
 use 5.008001;
 
+# ABSTRACT: Perl interface to the NetBSD editline library
+# VERSION
+
 require Exporter;
 use AutoLoader;
 
@@ -31,8 +34,6 @@ our %EXPORT_TAGS = ( 'all' => [ qw(
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = ();
-
-our $VERSION = '0.11';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -74,11 +75,6 @@ XSLoader::load('Term::EditLine', $VERSION);
 1;
 
 __END__
-
-
-=head1 NAME
-
-Term::EditLine - Perl interface to the NetBSD editline library
 
 =head1 SYNOPSIS
 
@@ -339,23 +335,6 @@ L<https://github.com/uperl/Term-EditLine/pulls>
 =item editrc(5)
 
 =back
-
-=head1 AUTHOR
-
-Original Author:
-
-Ulrich Burgbacher, E<lt>ulrich@burgbacher.netE<gt>
-
-Current Maintainer:
-
-Graham Ollis E<lt>plicease@cpan.orgE<gt>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2003 by Ulrich Burgbacher
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
 
 =cut
 

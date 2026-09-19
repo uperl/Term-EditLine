@@ -4,12 +4,16 @@
 /MYMETA.json
 /MYMETA.yml
 /Makefile
+/Makefile.PL
+/MANIFEST
+/MANIFEST.SKIP
 /blib
 /const-c.inc
 /const-xs.inc
 /pm_to_blib
 /Term-EditLine-*.tar.gz
 /Term-EditLine-*/
+/.build/
 *.bak
 *.old
 *~
