@@ -128,7 +128,7 @@ unsigned char pwrapper (EditLine * e, int k, unsigned int id)
       SPAGAIN;
 
       if(count != 1) {
-	croak ("Term::EditLine: internal error\n");
+    croak ("Term::EditLine: internal error\n");
       }
 
       ret = POPi;
@@ -247,7 +247,7 @@ INCLUDE: const-xs.inc
 
 void
 el_beep(he)
-	HistEdit * 	he
+    HistEdit *  he
 CODE:
 {
   el_beep(he->el);
@@ -255,8 +255,8 @@ CODE:
 
 void
 el_deletestr(he, count)
-	HistEdit * 	he
-	int		count
+    HistEdit *  he
+    int     count
 CODE:
 {
   el_deletestr(he->el,count);
@@ -264,7 +264,7 @@ CODE:
 
 char *
 el_getc(he)
-	HistEdit * 	he
+    HistEdit *  he
 PREINIT:
   char ch[2];
   char c;
@@ -279,7 +279,7 @@ CODE:
 
 void
 el_gets(he)
-	HistEdit* he
+    HistEdit* he
 PREINIT:
   int count;
   const char *line;
@@ -298,9 +298,9 @@ HistEdit *
 el_new(pkg,name,fin=stdin,fout=stdout,ferr=stderr)
      char *     pkg
      char *     name
-     FILE *	fin
-     FILE *	fout
-     FILE *	ferr
+     FILE * fin
+     FILE * fout
+     FILE * ferr
 PREINIT:
    HistEvent ev;
    SV *el;
@@ -580,8 +580,8 @@ OUTPUT:
 
 int
 el_insertstr(he, str)
-	HistEdit * 	he
-	char *		str
+    HistEdit *  he
+    char *      str
 CODE:
 {
   RETVAL = el_insertstr(he->el,str);
@@ -589,7 +589,7 @@ CODE:
 
 void
 el_line(he)
-     HistEdit * 	he
+     HistEdit *     he
 PREINIT:
      const LineInfo *le;
 PPCODE:
@@ -634,9 +634,9 @@ PPCODE:
 
     for(i=1;i<items;i++) {
       if(SvPOK(ST(i))) {
-	argv[i-1] = SvPV(ST(i),len);
+    argv[i-1] = SvPV(ST(i),len);
       } else {
-	argv[i-1] = NULL;
+    argv[i-1] = NULL;
       }
     }
 
@@ -653,8 +653,8 @@ PPCODE:
 
 void
 el_push(he, arg1)
-	HistEdit * he
-	char *	arg1
+    HistEdit * he
+    char *  arg1
 CODE:
 {
   el_push(he->el,arg1);
@@ -662,7 +662,7 @@ CODE:
 
 void
 el_reset(he)
-	HistEdit * 	he
+    HistEdit *  he
 CODE:
 {
   el_reset(he->el);
@@ -670,7 +670,7 @@ CODE:
 
 void
 el_resize(he)
-	HistEdit * 	he
+    HistEdit *  he
 CODE:
 {
   el_resize(he->el);
@@ -798,9 +798,9 @@ CODE:
 
     for(i=1;i<items;i++) {
       if(SvPOK(ST(i))) {
-	argv[i] = SvPV(ST(i),PL_na);
+    argv[i] = SvPV(ST(i),PL_na);
       } else {
-	argv[i] = NULL;
+    argv[i] = NULL;
       }
     }
 
@@ -862,8 +862,8 @@ CODE:
 
 int
 el_source(he, arg1)
-	HistEdit * 	he
-	const char *	arg1
+    HistEdit *  he
+    const char *    arg1
 CODE:
 {
   el_source(he->el,arg1);

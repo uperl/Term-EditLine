@@ -107,21 +107,21 @@ Term::ReadLine interface.
          my $rout = $rin;
          if (select ($rout,undef,undef,0.1)) {
            if (vec($rout,fileno($sock),1)) {
-             if(sysread ($sock,$tmp,1024)) {
-               $tmp = $buf . $tmp;
-             }
-             while (($i = index($tmp,"\n")) != -1) {
-               $_ = substr ($tmp,0,$i);
-               chomp ($_);
-               print "\r\e[0J";                 # ugly
-               print "$_\n". $el->get_prompt(); # hack!
-               $tmp = substr($tmp,$i+1<=length($tmp)?$i+1:length($i+1));
-             }
-             $buf = $tmp;
+         if(sysread ($sock,$tmp,1024)) {
+           $tmp = $buf . $tmp;
+         }
+         while (($i = index($tmp,"\n")) != -1) {
+           $_ = substr ($tmp,0,$i);
+           chomp ($_);
+           print "\r\e[0J";                 # ugly
+           print "$_\n". $el->get_prompt(); # hack!
+           $tmp = substr($tmp,$i+1<=length($tmp)?$i+1:length($i+1));
+         }
+         $buf = $tmp;
            }
            if (vec($rout,fileno(STDIN),1)) {
-             sysread(STDIN,$c,1);
-             return $c;
+         sysread(STDIN,$c,1);
+         return $c;
            }
          }
        }
