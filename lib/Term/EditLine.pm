@@ -115,7 +115,7 @@ should be globs. See also el_init(3).
 =item gets
 
 Read a line from the tty. If successful returns the line read,
-or undef if no characters where read or if an error occured.
+or undef if no characters were read or if an error occurred.
 
 =item set_prompt ( PROMPT )
 
