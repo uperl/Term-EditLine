@@ -16,20 +16,20 @@ our @ISA = qw(Exporter);
 # names by default without a very good reason. Use EXPORT_OK instead.
 # Do not simply export all your public functions/methods/constants.
 
-# This allows declaration	use Term::EditLine ':all';
+# This allows declaration   use Term::EditLine ':all';
 # If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
 # will save memory.
 our %EXPORT_TAGS = ( 'all' => [ qw(
-	CC_ARGHACK
-	CC_CURSOR
-	CC_EOF
-	CC_ERROR
-	CC_FATAL
-	CC_NEWLINE
-	CC_NORM
-	CC_REDISPLAY
-	CC_REFRESH
-	CC_REFRESH_BEEP
+    CC_ARGHACK
+    CC_CURSOR
+    CC_EOF
+    CC_ERROR
+    CC_FATAL
+    CC_NEWLINE
+    CC_NORM
+    CC_REDISPLAY
+    CC_REFRESH
+    CC_REFRESH_BEEP
 ) ] );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
@@ -53,14 +53,14 @@ sub AUTOLOAD {
     }
 
     {
-	no strict 'refs';
-	# Fixed between 5.005_53 and 5.005_61
-#XXX	if ($] >= 5.00561) {
-#XXX	    *$AUTOLOAD = sub () { $val };
-#XXX	}
-#XXX	else {
-	    *$AUTOLOAD = sub { $val };
-#XXX	}
+    no strict 'refs';
+    # Fixed between 5.005_53 and 5.005_61
+#XXX    if ($] >= 5.00561) {
+#XXX        *$AUTOLOAD = sub () { $val };
+#XXX    }
+#XXX    else {
+        *$AUTOLOAD = sub { $val };
+#XXX    }
     }
     goto &$AUTOLOAD;
 }
@@ -180,21 +180,21 @@ when no input is available. A simple tcp chatclient example:
       my $rout = $rin;
       if (select ($rout,undef,undef,0.1)) {
         if (vec($rout,fileno($sock),1)) {
-	  if(sysread ($sock,$tmp,1024)) {
-	    $tmp = $buf . $tmp;
-	  }
-	  while (($i = index($tmp,"\n")) != -1) {
-	    $_ = substr ($tmp,0,$i);
-  	    chomp ($_);
-	    print "\r\e[0J";                 # ugly
-	    print "$_\n". $el->get_prompt(); # hack!
-	    $tmp = substr($tmp,$i+1<=length($tmp)?$i+1:length($i+1));
-	  }
-	  $buf = $tmp;
+      if(sysread ($sock,$tmp,1024)) {
+        $tmp = $buf . $tmp;
+      }
+      while (($i = index($tmp,"\n")) != -1) {
+        $_ = substr ($tmp,0,$i);
+        chomp ($_);
+        print "\r\e[0J";                 # ugly
+        print "$_\n". $el->get_prompt(); # hack!
+        $tmp = substr($tmp,$i+1<=length($tmp)?$i+1:length($i+1));
+      }
+      $buf = $tmp;
         }
         if (vec($rout,fileno(STDIN),1)) {
-	  sysread(STDIN,$c,1);
-	  return $c;
+      sysread(STDIN,$c,1);
+      return $c;
         }
       }
     }
