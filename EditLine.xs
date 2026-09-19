@@ -287,6 +287,15 @@ PPCODE:
 {
   line = el_gets(he->el,&count);
 
+  /* el_gets() may have invoked a bound key function, a prompt
+   * function, or a custom getc function, any of which can call
+   * back into Perl. If that callback grows the Perl stack (for
+   * example by pushing many elements onto an array), the stack
+   * gets reallocated out from under the SP captured by this
+   * function's implicit dSP, leaving it pointing at freed memory.
+   * Refresh it before pushing anything. */
+  SPAGAIN;
+
   dXSTARG;
   if (line != NULL)
     XPUSHp(line,count);
@@ -682,7 +691,7 @@ int el_set_prompt(he, func)
      SV * func
 CODE:
 {
-  if(strcmp(sv_reftype(SvRV(func),0),"CODE") == 0) {
+  if(SvROK(func) && strcmp(sv_reftype(SvRV(func),0),"CODE") == 0) {
     he->promptSv = newSVsv(func);
     RETVAL = el_set(he->el,EL_PROMPT,promptfunc);
   } else {
@@ -703,7 +712,7 @@ int el_set_rprompt(he, func)
      SV * func
 CODE:
 {
-  if(strcmp(sv_reftype(SvRV(func),0),"CODE") == 0) {
+  if(SvROK(func) && strcmp(sv_reftype(SvRV(func),0),"CODE") == 0) {
     he->rpromptSv = newSVsv(func);
     RETVAL = el_set(he->el,EL_RPROMPT,rpromptfunc);
   } else {
@@ -715,7 +724,7 @@ CODE:
       he->rprompt = malloc(SvLEN(func)+1);
       strcpy(he->rprompt,SvPV(func,PL_na));
     }
-    RETVAL = el_set(he->el,EL_PROMPT,rpromptfunc);
+    RETVAL = el_set(he->el,EL_RPROMPT,rpromptfunc);
   }
 }
 
@@ -843,7 +852,7 @@ int el_set_getc_fun (he,sub)
      SV *sub
 CODE:
 {
-  if (SvTYPE(SvRV(sub)) == SVt_PVCV) {
+  if (SvROK(sub) && SvTYPE(SvRV(sub)) == SVt_PVCV) {
     he->getcSv = newSVsv(sub);
     RETVAL = el_set(he->el,EL_GETCFN,te_getc_fun);
   } else {
