@@ -5,6 +5,8 @@
 
 # change 'tests => 2' to 'tests => last_test_to_print';
 
+use strict;
+use warnings;
 use Test::More tests => 2;
 BEGIN { use_ok('Term::EditLine') };
 
@@ -18,7 +20,7 @@ foreach my $constname (qw(
     EL_TELLTC EL_TERMINAL H_ADD H_APPEND H_CLEAR H_CURR H_END H_ENTER
     H_FIRST H_FUNC H_GETSIZE H_LAST H_LOAD H_NEXT H_NEXT_EVENT H_NEXT_STR
     H_PREV H_PREV_EVENT H_PREV_STR H_SAVE H_SET H_SETSIZE)) {
-  next if (eval "my \$a = $constname; 1");
+  next if (eval "my \$a = Term::EditLine::$constname(); 1");
   if ($@ =~ /^Your vendor has not defined Term::EditLine macro $constname/) {
     print "# pass: $@";
   } else {

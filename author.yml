@@ -4,14 +4,24 @@ pod_spelling_system:
   # list of words that are spelled correctly
   # (regardless of what spell check thinks)
   stopwords:
+    - Burgbacher
+    - STR
+    - Ulrich
+    - chatclient
+    - deletestr
     - editline
     - editrc
+    - fd
+    - fds
+    - insertstr
     - libedit
     - NetBSD
     - PROGNAME
+    - redisplay
     - RPROMPT
     - getc
     - rprompt
+    - tcp
 
 pod_coverage:
   skip: 0
