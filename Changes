@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.12      2026-09-19 05:12:05 -0600
   - Fix compile error on modern compilers: EL_BUILTIN_GETCFN is a NULL
     pointer, not an integer, so it can no longer be assigned to the IV
     used for the other constants.  It is now exposed to Perl as undef.
