@@ -57,12 +57,16 @@ sub myWriteMakefile
   {
     my @names = (qw(CC_ARGHACK CC_CURSOR CC_EOF CC_ERROR CC_FATAL CC_NEWLINE
                    CC_NORM CC_REDISPLAY CC_REFRESH CC_REFRESH_BEEP EL_ADDFN
-                   EL_BIND EL_BUILTIN_GETCFN EL_CLIENTDATA EL_ECHOTC EL_EDITMODE
+                   EL_BIND EL_CLIENTDATA EL_ECHOTC EL_EDITMODE
                    EL_EDITOR EL_GETCFN EL_HIST EL_PROMPT EL_RPROMPT EL_SETTC
                    EL_SETTY EL_SIGNAL EL_TELLTC EL_TERMINAL H_ADD H_APPEND
                    H_CLEAR H_CURR H_END H_ENTER H_FIRST H_FUNC H_GETSIZE H_LAST
                    H_LOAD H_NEXT H_NEXT_EVENT H_NEXT_STR H_PREV H_PREV_EVENT
-                   H_PREV_STR H_SAVE H_SET H_SETSIZE));
+                   H_PREV_STR H_SAVE H_SET H_SETSIZE),
+                # EL_BUILTIN_GETCFN is (NULL), not an integer; a plain IV
+                # constant can't hold a pointer value, so surface it to
+                # Perl as undef instead.
+                { name => 'EL_BUILTIN_GETCFN', type => 'UNDEF', macro => 'EL_BUILTIN_GETCFN' });
     ExtUtils::Constant::WriteConstants(
       NAME         => 'Term::EditLine',
       NAMES        => \@names,
