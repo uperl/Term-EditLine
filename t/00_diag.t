@@ -11,6 +11,8 @@ my $post_diag;
 
 $modules{$_} = $_ for qw(
   ExtUtils::MakeMaker
+  File::Spec
+  File::Temp
   Test2::V0
   Test::More
   XSLoader
